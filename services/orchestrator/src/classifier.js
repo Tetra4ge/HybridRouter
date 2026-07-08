@@ -25,7 +25,7 @@ const CODE_PATTERNS = [
 ];
 
 const PARSING_PATTERNS = [
-  /\b(extract|parse|find all|list all)\b/i,
+  /\b(extract|parse|find\s+all|list\s+all|find)\b/i,
   /\b(email|phone|url|date|name)\b.*\b(from|in)\b/i,
   /\b(convert|transform|format)\b.*\b(json|csv|xml|yaml)\b/i,
   /\b(regex|regular expression|pattern)\b/i,
