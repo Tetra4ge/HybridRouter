@@ -113,8 +113,9 @@ const textSolver = {
     }
     
     if (/sort.*(?:alphabetically|numerically)/i.test(text)) {
+      const isNumeric = /sort.*numerically/i.test(text);
       const items = extractList(text);
-      const sorted = items.sort((a, b) => a.localeCompare(b));
+      const sorted = items.sort((a, b) => isNumeric ? Number(a) - Number(b) : a.localeCompare(b));
       return { answer: sorted.join(', '), confidence: 1.0, solverType: 'deterministic/text', promptTokens: 0, completionTokens: 0, totalTokens: 0 };
     }
     
@@ -133,8 +134,8 @@ const dataSolver = {
       if (!jsonMatch) return null;
       const jsonData = JSON.parse(jsonMatch[0]);
       
-      // Basic fallback since data parsing needs specific requirements
-      return { answer: "Parsed JSON data", confidence: 0.9, solverType: 'deterministic/data', promptTokens: 0, completionTokens: 0, totalTokens: 0 };
+      // Data parsing needs specific requirements, so we shouldn't short-circuit escalation
+      return null;
     } catch (e) {
       return null;
     }

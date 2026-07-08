@@ -1,8 +1,11 @@
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import { solveTask } from '../services/orchestrator/src/router.js';
 
-const BENCHMARK_PATH = path.join(process.cwd(), '..', '..', 'eval', 'benchmark.json');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const BENCHMARK_PATH = path.join(__dirname, 'benchmark.json');
 
 async function runEval() {
   console.log('Starting Tier-0 Evaluation...');
