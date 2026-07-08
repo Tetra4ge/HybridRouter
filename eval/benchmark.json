@@ -1,0 +1,56 @@
+[
+  {
+    "id": "tier0_math_01",
+    "content": "What is 5 + 3?",
+    "category": "math",
+    "expected": "8"
+  },
+  {
+    "id": "tier0_math_02",
+    "content": "Calculate 15% of 230",
+    "category": "math",
+    "expected": "34.5"
+  },
+  {
+    "id": "tier0_math_03",
+    "content": "Square root of 144",
+    "category": "math",
+    "expected": "12"
+  },
+  {
+    "id": "tier0_math_04",
+    "content": "What is 2^10?",
+    "category": "math",
+    "expected": "1024"
+  },
+  {
+    "id": "tier0_math_05",
+    "content": "Average of 10, 20, 30, 40",
+    "category": "math",
+    "expected": "25"
+  },
+  {
+    "id": "tier0_parse_01",
+    "content": "Extract emails: john@example.com and jane@test.org",
+    "category": "parsing",
+    "expected": "john@example.com, jane@test.org"
+  },
+  {
+    "id": "tier0_parse_02",
+    "content": "Find URLs in: Visit https://google.com",
+    "category": "parsing",
+    "expected": "https://google.com"
+  },
+  {
+    "id": "tier0_text_01",
+    "content": "How many words in 'the quick brown fox'?",
+    "category": "text",
+    "expected": "4"
+  },
+  {
+    "id": "tier0_text_02",
+    "content": "Sort alphabetically: banana, apple, cherry",
+    "category": "text",
+    "expected": "apple, banana, cherry"
+  }
+]
