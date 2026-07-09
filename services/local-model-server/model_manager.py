@@ -8,6 +8,19 @@ class ModelManager:
         self.model = None
         self.tokenizer = None
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        
+        # Load environment variables from any nearby .env file
+        env_paths = [".env", "../.env", "../../.env", "../orchestrator/.env"]
+        for p in env_paths:
+            if os.path.exists(p):
+                with open(p, "r", encoding="utf-8") as f:
+                    for line in f:
+                        line = line.strip()
+                        if line and not line.startswith("#") and "=" in line:
+                            k, v = line.split("=", 1)
+                            os.environ[k.strip()] = v.strip()
+                break
+
         # Default to Qwen/Qwen2.5-1.5B-Instruct for speed and open access, but configurable
         self.model_name = os.getenv("MODEL_NAME", "Qwen/Qwen2.5-1.5B-Instruct")
         
