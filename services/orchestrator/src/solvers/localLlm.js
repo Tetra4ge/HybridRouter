@@ -25,8 +25,8 @@ export async function solveWithLocalModel(task, category) {
 
     if (useHfServerless) {
       const hfToken = process.env.HF_TOKEN;
-      const modelName = process.env.MODEL_NAME || 'google/gemma-2b-it';
-      const hfUrl = `https://api-inference.huggingface.co/models/${modelName}`;
+      const modelName = process.env.MODEL_NAME || 'google/gemma-3-12b-it';
+      const hfUrl = 'https://router.huggingface.co/v1/chat/completions';
 
       if (!hfToken) {
         console.warn('[LocalLLM] USE_HF_SERVERLESS is true but HF_TOKEN is not defined.');
@@ -46,12 +46,12 @@ export async function solveWithLocalModel(task, category) {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            inputs: task.content,
-            parameters: {
-              max_new_tokens: maxTokens,
-              temperature: 0.7, // Higher temp for self-consistency diversity
-              return_full_text: false,
-            }
+            model: modelName,
+            messages: [
+              { role: 'user', content: task.content }
+            ],
+            max_tokens: maxTokens,
+            temperature: 0.7, // Higher temp for self-consistency diversity
           }),
         });
 
@@ -61,14 +61,7 @@ export async function solveWithLocalModel(task, category) {
         }
 
         const res = await response.json();
-        let sampleText = '';
-        if (Array.isArray(res) && res[0]) {
-          sampleText = res[0].generated_text || '';
-        } else if (res && res.generated_text) {
-          sampleText = res.generated_text;
-        } else {
-          sampleText = JSON.stringify(res);
-        }
+        const sampleText = res.choices?.[0]?.message?.content || '';
         return sampleText.trim();
       });
 

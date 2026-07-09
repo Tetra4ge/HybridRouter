@@ -12,15 +12,16 @@
 ---
 
 ## Objectives
+ 
+- [x] Implement Fireworks client using the OpenAI-compatible SDK
+- [x] Create model tier map (category → cheap/strong model)
+- [x] Implement prompt compression (strip unnecessary context)
+- [x] Implement verification mode (yes/no instead of full generation)
+- [x] Set category-specific `max_tokens` caps
+- [x] Add error handling with retry logic
+- [x] Integrate into router.js as Tier-2 and Tier-3
+- [x] Log all Fireworks token usage to SQLite
 
-- [ ] Implement Fireworks client using the OpenAI-compatible SDK
-- [ ] Create model tier map (category → cheap/strong model)
-- [ ] Implement prompt compression (strip unnecessary context)
-- [ ] Implement verification mode (yes/no instead of full generation)
-- [ ] Set category-specific `max_tokens` caps
-- [ ] Add error handling with retry logic
-- [ ] Integrate into router.js as Tier-2 and Tier-3
-- [ ] Log all Fireworks token usage to SQLite
 
 ---
 

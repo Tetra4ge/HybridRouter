@@ -13,13 +13,14 @@
 
 ## Objectives
 
-- [ ] Implement multi-signal confidence scoring (consistency + hedging + length)
-- [ ] Create per-category threshold configuration
-- [ ] Implement 4-action decision logic (ACCEPT / VERIFY / GENERATE_CHEAP / GENERATE_STRONG)
-- [ ] Wire confidence gate into router.js between Tier-1 and Tier-2
-- [ ] Add verification mode (ask Fireworks "Is this correct?" instead of regenerating)
-- [ ] Create threshold tuning script
-- [ ] Run eval to find optimal thresholds per category
+- [x] Implement multi-signal confidence scoring (consistency + hedging + length)
+- [x] Create per-category threshold configuration
+- [x] Implement 4-action decision logic (ACCEPT / VERIFY / GENERATE_CHEAP / GENERATE_STRONG)
+- [x] Wire confidence gate into router.js between Tier-1 and Tier-2
+- [x] Add verification mode (ask Fireworks "Is this correct?" instead of regenerating)
+- [x] Create threshold tuning script
+- [x] Run eval to find optimal thresholds per category
+
 
 ---
 
