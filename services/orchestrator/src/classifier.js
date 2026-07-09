@@ -7,7 +7,7 @@ const MATH_PATTERNS = [
   /\bcalculat[e|ion]\b/i,
   /\bsolve\b.*\bequation\b/i,
   /\bwhat\s+is\s+\d+/i,
-  /\b(sum|product|difference|quotient)\b/i,
+  /\b(sum|product\s+of|difference|quotient)\b/i,
   /\b(square root|sqrt|factorial|log)\b/i,
   /\b(percentage|percent|%)\b/i,
   /\b(area|volume|perimeter|circumference)\b/i,
