@@ -56,6 +56,9 @@ function containsPatterns(text, patterns) {
 }
 
 export function classify(task) {
+  if (task.category && CATEGORIES.includes(task.category)) {
+    return { category: task.category, confidence: 1.0, method: 'manual' };
+  }
   const text = (task.content || '').toLowerCase();
   
   if (containsMathPatterns(text)) return { category: 'math', confidence: 0.9, method: 'regex' };
