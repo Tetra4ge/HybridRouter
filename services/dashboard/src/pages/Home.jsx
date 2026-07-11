@@ -1,19 +1,20 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { 
-  Zap, 
-  ShieldCheck, 
-  TrendingDown, 
-  Cpu, 
-  Database, 
-  Sliders, 
+import {
+  Zap,
+  ShieldCheck,
+  TrendingDown,
+  Cpu,
+  Database,
+  Sliders,
   ArrowRight,
   Sun,
   Moon,
   Menu,
   X
 } from 'lucide-react'
+import SavingsCalculator from '../components/SavingsCalculator'
 
 // Animation variants
 const containerVariants = {
@@ -38,7 +39,7 @@ export default function Home({ theme, toggleTheme }) {
   const [menuOpen, setMenuOpen] = useState(false)
 
   return (
-    <motion.div 
+    <motion.div
       className="home-container"
       initial="hidden"
       animate="visible"
@@ -47,13 +48,10 @@ export default function Home({ theme, toggleTheme }) {
       {/* Header / Navbar */}
       <motion.header className="dashboard-header" variants={itemVariants}>
         <div className="logo-area">
-          <div className="logo-icon-box">
-            <Cpu size={22} />
-          </div>
           <h1 style={{ fontFamily: 'var(--display)' }}>HybridRouter</h1>
         </div>
 
-        <button 
+        <button
           className="menu-toggle-btn"
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Toggle menu"
@@ -63,6 +61,7 @@ export default function Home({ theme, toggleTheme }) {
 
         <nav className={`navbar-links ${menuOpen ? 'open' : ''}`}>
           <a href="#features" className="nav-link" onClick={() => setMenuOpen(false)}>Features</a>
+          <a href="#simulator" className="nav-link" onClick={() => setMenuOpen(false)}>Simulator</a>
           <a href="#architecture" className="nav-link" onClick={() => setMenuOpen(false)}>Architecture</a>
           <button onClick={toggleTheme} className="theme-toggle-btn" aria-label="Toggle Theme">
             {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
@@ -71,39 +70,45 @@ export default function Home({ theme, toggleTheme }) {
       </motion.header>
 
       {/* Hero Section */}
-      <section className="home-hero">
-        <motion.div 
+      <motion.section className="home-hero" variants={itemVariants}>
+        {/* Corner HUD Markers */}
+        <div className="hero-corner top-left">+</div>
+        <div className="hero-corner top-right">+</div>
+        <div className="hero-corner bottom-left">+</div>
+        <div className="hero-corner bottom-right">+</div>
+
+        <motion.div
           className="hero-badge"
           variants={itemVariants}
         >
           HYBRID TASK ROUTER
         </motion.div>
-        
+
         <motion.h2 variants={itemVariants}>
           Hybrid Token-Efficient Routing Agent
         </motion.h2>
-        
+
         <motion.p className="hero-subtitle" variants={itemVariants}>
           An intelligent, multi-tier waterfall router that maximizes task-solving accuracy while minimizing Fireworks Cloud API token costs using AMD ROCm powered local Gemma inference.
         </motion.p>
-        
-        <motion.div 
+
+        <motion.div
           className="hero-buttons"
           variants={itemVariants}
         >
-          <motion.button 
-            className="primary-btn" 
-            style={{ padding: '0.8rem 2.5rem', fontSize: '1.05rem' }} 
+          <motion.button
+            className="primary-btn"
+            style={{ padding: '0.8rem 2.5rem', fontSize: '1.05rem' }}
             onClick={() => navigate('/console')}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
             Open Live Console
           </motion.button>
-          
-          <motion.a 
-            href="#architecture" 
-            className="secondary-btn" 
+
+          <motion.a
+            href="#architecture"
+            className="secondary-btn"
             style={{ padding: '0.8rem 2.5rem', fontSize: '1.05rem' }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -111,14 +116,14 @@ export default function Home({ theme, toggleTheme }) {
             Explore Architecture
           </motion.a>
         </motion.div>
-      </section>
+      </motion.section>
 
       {/* Key Features Grid */}
       <motion.section id="features" className="features-section" variants={containerVariants}>
         <motion.h3 className="section-title" variants={itemVariants}>
           Core Architecture Features
         </motion.h3>
-        
+
         <div className="features-grid">
           <motion.div className="feature-card" variants={itemVariants} whileHover={{ y: -6 }}>
             <div className="feature-icon" style={{ color: 'var(--accent-butter)' }}>
@@ -170,12 +175,17 @@ export default function Home({ theme, toggleTheme }) {
         </div>
       </motion.section>
 
+      {/* Savings Calculator Section */}
+      <motion.div variants={itemVariants}>
+        <SavingsCalculator />
+      </motion.div>
+
       {/* Interactive Pipeline Visualizer Section */}
       <motion.section id="architecture" className="architecture-section" variants={containerVariants}>
         <motion.h3 className="section-title" variants={itemVariants}>
           Routing Pipeline Overview
         </motion.h3>
-        
+
         <motion.div className="architecture-diagram-container" variants={itemVariants}>
           <div className="arch-step">
             <div className="arch-step-header">1. Classifier</div>

@@ -144,7 +144,7 @@ export default function Console({ theme, toggleTheme }) {
       <header className="dashboard-header">
         <div className="logo-area" style={{ textAlign: 'left' }}>
           <button className="back-btn" onClick={() => navigate('/')}>
-            ◄ Back to Portal Home
+            ◄ Back
           </button>
           <h1 style={{ marginTop: '0.8rem' }}>Control Center Dashboard</h1>
         </div>
