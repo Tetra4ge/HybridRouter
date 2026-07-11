@@ -1,96 +1,156 @@
 import { useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
+
+// Animation variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.15 }
+  }
+}
+
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: { type: 'spring', stiffness: 80, damping: 15 }
+  }
+}
 
 export default function Home() {
   const navigate = useNavigate()
 
   return (
-    <div className="home-container">
+    <motion.div 
+      className="home-container"
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+    >
       {/* Header */}
-      <header className="dashboard-header">
+      <motion.header className="dashboard-header" variants={itemVariants}>
         <div className="logo-area" style={{ textAlign: 'left' }}>
-          <h1>HybridRouter</h1>
+          <h1 style={{ fontFamily: 'var(--display)' }}>HybridRouter</h1>
           <p>Task Solver & Token Optimization Router — Track 1</p>
         </div>
-        <button className="cta-launch-btn" onClick={() => navigate('/console')}>
+        <motion.button 
+          className="cta-launch-btn" 
+          onClick={() => navigate('/console')}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
           Launch Control Center ──►
-        </button>
-      </header>
+        </motion.button>
+      </motion.header>
 
       {/* Hero Section */}
       <section className="home-hero">
-        <div className="hero-badge">HYBRID TASK ROUTER</div>
-        <h2>Hybrid Token-Efficient Routing Agent</h2>
-        <p className="hero-subtitle">
-          An intelligent, multi-tier waterfall router that maximizes task-solving accuracy while minimizing Fireworks Cloud API token costs.
-        </p>
-        <div style={{ marginTop: '2.5rem', display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-          <button className="playground-btn" style={{ padding: '0.8rem 2rem', fontSize: '1rem', height: 'auto' }} onClick={() => navigate('/console')}>
+        <motion.div 
+          className="hero-badge"
+          variants={itemVariants}
+          whileHover={{ scale: 1.05 }}
+        >
+          HYBRID TASK ROUTER
+        </motion.div>
+        
+        <motion.h2 
+          variants={itemVariants}
+          style={{ textShadow: '0 0 20px var(--accent-cherry-glow)' }}
+        >
+          Hybrid Token-Efficient Routing Agent
+        </motion.h2>
+        
+        <motion.p className="hero-subtitle" variants={itemVariants}>
+          An intelligent, multi-tier waterfall router that maximizes task-solving accuracy while minimizing Fireworks Cloud API token costs using AMD ROCm powered local Gemma inference.
+        </motion.p>
+        
+        <motion.div 
+          style={{ marginTop: '2.5rem', display: 'flex', gap: '1rem', justifyContent: 'center' }}
+          variants={itemVariants}
+        >
+          <motion.button 
+            className="playground-btn" 
+            style={{ padding: '0.8rem 2.5rem', fontSize: '1.05rem', height: 'auto' }} 
+            onClick={() => navigate('/console')}
+            whileHover={{ scale: 1.05, boxShadow: '0 0 15px var(--accent-butter-glow)' }}
+            whileTap={{ scale: 0.95 }}
+          >
             Open Live Console
-          </button>
-          <a 
+          </motion.button>
+          
+          <motion.a 
             href="#architecture" 
             className="status-badge" 
             style={{ 
-              padding: '0.8rem 2rem', 
+              padding: '0.8rem 2.5rem', 
               cursor: 'pointer', 
               textDecoration: 'none', 
-              borderColor: 'var(--accent-red)', 
-              color: 'var(--accent-red)',
-              background: 'rgba(229, 9, 20, 0.05)',
+              borderColor: 'var(--text-main)', 
+              color: 'var(--text-main)',
               fontWeight: '600'
             }}
+            whileHover={{ scale: 1.05, background: 'rgba(255, 237, 171, 0.1)' }}
+            whileTap={{ scale: 0.95 }}
           >
             Explore Architecture
-          </a>
-        </div>
+          </motion.a>
+        </motion.div>
       </section>
 
       {/* Key Features Grid */}
-      <section className="features-section">
-        <h3 className="section-title">Core Architecture Features</h3>
+      <motion.section className="features-section" variants={containerVariants}>
+        <motion.h3 className="section-title" variants={itemVariants}>
+          Core Architecture Features
+        </motion.h3>
+        
         <div className="features-grid">
-          <div className="feature-card">
+          <motion.div className="feature-card" variants={itemVariants} whileHover={{ y: -6 }}>
             <div className="feature-icon">⚡</div>
             <h4>Waterfall Routing Order</h4>
             <p>Sequentially routes queries from Classifier, to Tier-0 (Deterministic), to Tier-1 (Local LLM), and escalates to Fireworks Cloud tiers only when confidence gates fail.</p>
-          </div>
+          </motion.div>
 
-          <div className="feature-card">
+          <motion.div className="feature-card" variants={itemVariants} whileHover={{ y: -6 }}>
             <div className="feature-icon">🛡️</div>
             <h4>Confidence Gating</h4>
-            <p>Applies per-category dynamic thresholds (e.g. classification, math, code) and executes self-consistency voting to avoid expensive cloud calls.</p>
-          </div>
+            <p>Applies per-category dynamic thresholds and executes self-consistency voting to avoid expensive cloud calls.</p>
+          </motion.div>
 
-          <div className="feature-card">
+          <motion.div className="feature-card" variants={itemVariants} whileHover={{ y: -6 }}>
             <div className="feature-icon">📉</div>
             <h4>89.2% Cost Savings</h4>
             <p>Reduces Fireworks API expenses significantly by filtering math, regex, parsing, and confident responses to free local resources.</p>
-          </div>
+          </motion.div>
 
-          <div className="feature-card">
+          <motion.div className="feature-card" variants={itemVariants} whileHover={{ y: -6 }}>
             <div className="feature-icon">💻</div>
             <h4>Local Model Solver</h4>
             <p>Uses a local model server hosting Gemma-3-12B-it to solve tasks locally at zero Fireworks Cloud API token cost.</p>
-          </div>
+          </motion.div>
 
-          <div className="feature-card">
+          <motion.div className="feature-card" variants={itemVariants} whileHover={{ y: -6 }}>
             <div className="feature-icon">🗄️</div>
             <h4>SQLite Telemetry Logs</h4>
             <p>Audits every routing run, recording task prompts, selected solvers, token counts, correctness checks, and execution times.</p>
-          </div>
+          </motion.div>
 
-          <div className="feature-card">
+          <motion.div className="feature-card" variants={itemVariants} whileHover={{ y: -6 }}>
             <div className="feature-icon">🎛️</div>
             <h4>Interactive Playground</h4>
             <p>Enables developers to submit custom queries, override model routing, and inspect the decision pipeline visually in real-time.</p>
-          </div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Interactive Pipeline Visualizer Section */}
-      <section id="architecture" className="architecture-section">
-        <h3 className="section-title">Routing Pipeline Overview</h3>
-        <div className="architecture-diagram-container">
+      <motion.section id="architecture" className="architecture-section" variants={containerVariants}>
+        <motion.h3 className="section-title" variants={itemVariants}>
+          Routing Pipeline Overview
+        </motion.h3>
+        
+        <motion.div className="architecture-diagram-container" variants={itemVariants}>
           <div className="arch-step">
             <div className="arch-step-header">1. Classifier</div>
             <p>Regex & heuristics identify task category (Math, Code, Factual, Sentiment, etc.).</p>
@@ -110,8 +170,8 @@ export default function Home() {
             <div className="arch-step-header">4. Escalation Tiers</div>
             <p>Escalates to Cheap or Strong Fireworks models only if local confidence is low.</p>
           </div>
-        </div>
-      </section>
-    </div>
+        </motion.div>
+      </motion.section>
+    </motion.div>
   )
 }

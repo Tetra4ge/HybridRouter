@@ -20,3 +20,10 @@ Use this system for all styling, styling tokens, components, and layouts of the 
 *   **Micro-animations:** Always use `framer-motion` for transitions, card hover scales, and data list reveals.
 *   **Charts:** Use `recharts` for visualization, styling the area strokes and tooltips with gradients utilizing Cherry red and warm Butter shades.
 *   **Layout:** Keep layouts responsive, utilizing flexbox/grid with soft card borders, warm dropshadows, and clear spacing.
+
+## ✨ Premium Feel & Rich Aesthetics
+To ensure a stunning, world-class developer dashboard:
+1. **Glassmorphism & Gradients:** Avoid flat, boring backgrounds. Combine `#FFEDAB` (Butter) and `#75070C` (Cherry) using smooth, translucent overlays (`backdrop-filter: blur(12px)`), warm dropshadows, and cherry-to-gold linear gradients.
+2. **Interactive Depth:** All cards and buttons must feel tactile. Implement subtle glowing hover states, micro-interactions, and 3D card tilts using `framer-motion` to elevate the UI to a premium level.
+3. **Immersive Branding:** Maintain a consistent dark/warm luxury aesthetic. Contrast deep charcoal or cherry-tinted dark backgrounds with glowing Butter-hued text and golden borders to emphasize a state-of-the-art AI command center.
+
