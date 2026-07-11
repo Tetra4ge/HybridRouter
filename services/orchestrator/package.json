@@ -4,7 +4,7 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "dev": "node server.js",
+    "dev": "nodemon server.js",
     "start": "node server.js",
     "evaluate": "node main.js",
     "eval:tier0": "node ../../eval/eval_runner.js",
@@ -19,6 +19,7 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "mathjs": "^14.0.1",
+    "nodemon": "^3.1.14",
     "openai": "^4.80.0"
   }
 }

@@ -1,4 +1,4 @@
-import { solveWithLocalModel } from './services/solvers/localLlm.js';
+import { solveWithLocalModel } from '../services/solvers/localLlm.js';
 import dotenv from 'dotenv';
 import path from 'path';
 
@@ -15,13 +15,13 @@ async function verify() {
     id: "verify_gemma_test",
     content: "Answer in exactly one word: What is the capital of France?"
   };
-  
+
   console.log("\nSending task to Gemma model...");
   console.log(`Prompt: "${testTask.content}"`);
-  
+
   try {
     const result = await solveWithLocalModel(testTask, "factual");
-    
+
     if (result) {
       console.log("\nSuccess! Gemma Model responded:");
       console.log("-----------------------------------------");
