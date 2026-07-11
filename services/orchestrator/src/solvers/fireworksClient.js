@@ -17,14 +17,14 @@ const client = new OpenAI({
  * Maps category to cheap (Tier-2) and strong (Tier-3) models.
  */
 export const MODEL_MAP = {
-  math:           { cheap: 'llama-v3p1-8b-instruct',    strong: 'llama-v3p1-70b-instruct' },
-  code:           { cheap: 'mixtral-8x7b-instruct',      strong: 'qwen2p5-72b-instruct'   },
-  factual:        { cheap: 'llama-v3p1-8b-instruct',    strong: 'llama-v3p1-70b-instruct' },
-  logic:          { cheap: 'mixtral-8x7b-instruct',      strong: 'llama-v3p1-70b-instruct' },
-  parsing:        { cheap: 'llama-v3p1-8b-instruct',    strong: 'mixtral-8x7b-instruct'   },
-  classification: { cheap: 'llama-v3p1-8b-instruct',    strong: 'mixtral-8x7b-instruct'   },
-  creative:       { cheap: 'mixtral-8x7b-instruct',      strong: 'llama-v3p1-70b-instruct' },
-  multi_step:     { cheap: 'mixtral-8x7b-instruct',      strong: 'llama-v3p1-70b-instruct' },
+  math:           { cheap: 'glm-5p1',    strong: 'deepseek-v4-pro' },
+  code:           { cheap: 'glm-5p1',    strong: 'deepseek-v4-pro' },
+  factual:        { cheap: 'kimi-k2p5',  strong: 'kimi-k2p6'       },
+  logic:          { cheap: 'glm-5p1',    strong: 'deepseek-v4-pro' },
+  parsing:        { cheap: 'glm-5p1',    strong: 'kimi-k2p6'       },
+  classification: { cheap: 'kimi-k2p5',  strong: 'kimi-k2p6'       },
+  creative:       { cheap: 'kimi-k2p5',  strong: 'kimi-k2p6'       },
+  multi_step:     { cheap: 'glm-5p1',    strong: 'deepseek-v4-pro' },
 };
 
 /**
@@ -109,7 +109,7 @@ export async function callFireworks(model, prompt, options = {}) {
       } else {
         answer = "NO";
       }
-    } else if (model.includes('mixtral') || model.includes('qwen')) {
+    } else if (model.includes('mixtral') || model.includes('qwen') || model.includes('glm') || model.includes('deepseek')) {
       if (prompt.toLowerCase().includes('fibonacci')) {
         answer = "function fib(n) { return [0, 1]; }";
       } else {
@@ -163,7 +163,7 @@ export async function callFireworks(model, prompt, options = {}) {
  * @returns {Promise<Object>} { verified: boolean, tokensUsed: number }
  */
 export async function verifyWithFireworks(localAnswer, task, category) {
-  const model = MODEL_MAP[category]?.cheap || 'llama-v3p1-8b-instruct';
+  const model = MODEL_MAP[category]?.cheap || 'glm-5p1';
   const verifyPrompt = `Question: ${task.content}\nProposed answer: ${localAnswer}\nIs this correct? Reply only YES or NO.`;
 
   const result = await callFireworks(model, verifyPrompt, {

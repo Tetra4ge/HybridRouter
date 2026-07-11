@@ -176,8 +176,8 @@ export async function solveTask(task) {
 
   // --- Tier 2 / 3: Fireworks Cloud Escalation ---
   const t = THRESHOLDS[category] || { high: 0.85, medium: 0.60, low: 0.35 };
-  const cheapModel = MODEL_MAP[category]?.cheap || 'llama-v3p1-8b-instruct';
-  const strongModel = MODEL_MAP[category]?.strong || 'llama-v3p1-70b-instruct';
+  const cheapModel = MODEL_MAP[category]?.cheap || 'glm-5p1';
+  const strongModel = MODEL_MAP[category]?.strong || 'deepseek-v4-pro';
   
   const { systemPrompt, userPrompt, maxTokens } = compressPrompt(task, category);
 
