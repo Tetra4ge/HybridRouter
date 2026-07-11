@@ -15,6 +15,7 @@ import {
   X
 } from 'lucide-react'
 import SavingsCalculator from '../components/SavingsCalculator'
+import HackathonAbout from '../components/HackathonAbout'
 
 // Animation variants
 const containerVariants = {
@@ -117,6 +118,9 @@ export default function Home({ theme, toggleTheme }) {
           </motion.a>
         </motion.div>
       </motion.section>
+
+      {/* About Hackathon & Mission Section */}
+      <HackathonAbout />
 
       {/* Key Features Grid */}
       <motion.section id="features" className="features-section" variants={containerVariants}>
