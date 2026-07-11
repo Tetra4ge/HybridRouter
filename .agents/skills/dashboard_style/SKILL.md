@@ -15,13 +15,13 @@ Use this system for all styling, styling tokens, components, and layouts of the 
 *   **Theme Vibe:** A premium, ultra-high-contrast minimalist mono design system. Solid block colors, clean transitions, and no gradients.
 
 ## ✍️ Typography
-*   **Headers & Titles:** **Ancola** (with **Cinzel** fallback) for display titles.
+*   **Headers & Titles:** **Geist Pixel** (with **Geist Mono** or **JetBrains Mono** fallback) for display titles.
 *   **Body & UI Text:** **Saira** for readable text.
 
 ## 🚀 Component Guidelines
 *   **Micro-animations:** Always use `framer-motion` for transitions, card hover scales, and data list reveals.
 *   **Borders & Corners:** **STRICTLY NO BORDERS AND NO BORDER RADIUS**. Set `border: none` (or `0`) and `border-radius: 0` everywhere. Corners must be perfectly sharp. Buttons should use solid background blocks (like card-bg) with only a shadow offset and no outline borders.
-*   **Layout:** Keep layouts responsive, utilizing solid block backgrounds instead of outlines to separate content.
+*   **Layout:** Keep layouts responsive, utilizing solid block backgrounds instead of outlines to separate content. On mobile screens (under 768px), hide the CPU branding icon, stack/hide the navbar links, and use a Lucide `Menu` (hamburger) toggle button on the right to reveal the links on demand.
 
 ## ✨ Premium Feel & Rich Aesthetics
 To ensure a stunning, unique developer dashboard:

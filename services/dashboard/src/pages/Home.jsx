@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { 
@@ -9,7 +10,9 @@ import {
   Sliders, 
   ArrowRight,
   Sun,
-  Moon
+  Moon,
+  Menu,
+  X
 } from 'lucide-react'
 
 // Animation variants
@@ -32,6 +35,7 @@ const itemVariants = {
 
 export default function Home({ theme, toggleTheme }) {
   const navigate = useNavigate()
+  const [menuOpen, setMenuOpen] = useState(false)
 
   return (
     <motion.div 
@@ -49,9 +53,17 @@ export default function Home({ theme, toggleTheme }) {
           <h1 style={{ fontFamily: 'var(--display)' }}>HybridRouter</h1>
         </div>
 
-        <nav className="navbar-links">
-          <a href="#features" className="nav-link">Features</a>
-          <a href="#architecture" className="nav-link">Architecture</a>
+        <button 
+          className="menu-toggle-btn"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Toggle menu"
+        >
+          {menuOpen ? <X size={22} /> : <Menu size={22} />}
+        </button>
+
+        <nav className={`navbar-links ${menuOpen ? 'open' : ''}`}>
+          <a href="#features" className="nav-link" onClick={() => setMenuOpen(false)}>Features</a>
+          <a href="#architecture" className="nav-link" onClick={() => setMenuOpen(false)}>Architecture</a>
           <button onClick={toggleTheme} className="theme-toggle-btn" aria-label="Toggle Theme">
             {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
           </button>
@@ -76,7 +88,7 @@ export default function Home({ theme, toggleTheme }) {
         </motion.p>
         
         <motion.div 
-          style={{ marginTop: '2.5rem', display: 'flex', gap: '1.2rem', justifyContent: 'center' }}
+          className="hero-buttons"
           variants={itemVariants}
         >
           <motion.button 
