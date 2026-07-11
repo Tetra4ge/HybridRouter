@@ -1,12 +1,22 @@
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import { 
+  Zap, 
+  ShieldCheck, 
+  TrendingDown, 
+  Cpu, 
+  Database, 
+  Sliders, 
+  ArrowRight,
+  ChevronRight
+} from 'lucide-react'
 
 // Animation variants
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.15 }
+    transition: { staggerChildren: 0.12 }
   }
 }
 
@@ -15,7 +25,7 @@ const itemVariants = {
   visible: {
     y: 0,
     opacity: 1,
-    transition: { type: 'spring', stiffness: 80, damping: 15 }
+    transition: { type: 'spring', stiffness: 90, damping: 14 }
   }
 }
 
@@ -36,12 +46,12 @@ export default function Home() {
           <p>Task Solver & Token Optimization Router — Track 1</p>
         </div>
         <motion.button 
-          className="cta-launch-btn" 
+          className="primary-btn" 
           onClick={() => navigate('/console')}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
-          Launch Control Center ──►
+          Launch Control Center &nbsp; <ChevronRight size={18} />
         </motion.button>
       </motion.header>
 
@@ -50,15 +60,11 @@ export default function Home() {
         <motion.div 
           className="hero-badge"
           variants={itemVariants}
-          whileHover={{ scale: 1.05 }}
         >
           HYBRID TASK ROUTER
         </motion.div>
         
-        <motion.h2 
-          variants={itemVariants}
-          style={{ textShadow: '0 0 20px var(--accent-cherry-glow)' }}
-        >
+        <motion.h2 variants={itemVariants}>
           Hybrid Token-Efficient Routing Agent
         </motion.h2>
         
@@ -67,14 +73,14 @@ export default function Home() {
         </motion.p>
         
         <motion.div 
-          style={{ marginTop: '2.5rem', display: 'flex', gap: '1rem', justifyContent: 'center' }}
+          style={{ marginTop: '2.5rem', display: 'flex', gap: '1.2rem', justifyContent: 'center' }}
           variants={itemVariants}
         >
           <motion.button 
-            className="playground-btn" 
-            style={{ padding: '0.8rem 2.5rem', fontSize: '1.05rem', height: 'auto' }} 
+            className="primary-btn" 
+            style={{ padding: '0.8rem 2.5rem', fontSize: '1.05rem' }} 
             onClick={() => navigate('/console')}
-            whileHover={{ scale: 1.05, boxShadow: '0 0 15px var(--accent-butter-glow)' }}
+            whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
             Open Live Console
@@ -82,16 +88,9 @@ export default function Home() {
           
           <motion.a 
             href="#architecture" 
-            className="status-badge" 
-            style={{ 
-              padding: '0.8rem 2.5rem', 
-              cursor: 'pointer', 
-              textDecoration: 'none', 
-              borderColor: 'var(--text-main)', 
-              color: 'var(--text-main)',
-              fontWeight: '600'
-            }}
-            whileHover={{ scale: 1.05, background: 'rgba(255, 237, 171, 0.1)' }}
+            className="secondary-btn" 
+            style={{ padding: '0.8rem 2.5rem', fontSize: '1.05rem' }}
+            whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
             Explore Architecture
@@ -107,37 +106,49 @@ export default function Home() {
         
         <div className="features-grid">
           <motion.div className="feature-card" variants={itemVariants} whileHover={{ y: -6 }}>
-            <div className="feature-icon">⚡</div>
+            <div className="feature-icon" style={{ color: 'var(--accent-butter)' }}>
+              <Zap size={32} />
+            </div>
             <h4>Waterfall Routing Order</h4>
             <p>Sequentially routes queries from Classifier, to Tier-0 (Deterministic), to Tier-1 (Local LLM), and escalates to Fireworks Cloud tiers only when confidence gates fail.</p>
           </motion.div>
 
           <motion.div className="feature-card" variants={itemVariants} whileHover={{ y: -6 }}>
-            <div className="feature-icon">🛡️</div>
+            <div className="feature-icon" style={{ color: 'var(--accent-butter)' }}>
+              <ShieldCheck size={32} />
+            </div>
             <h4>Confidence Gating</h4>
             <p>Applies per-category dynamic thresholds and executes self-consistency voting to avoid expensive cloud calls.</p>
           </motion.div>
 
           <motion.div className="feature-card" variants={itemVariants} whileHover={{ y: -6 }}>
-            <div className="feature-icon">📉</div>
+            <div className="feature-icon" style={{ color: 'var(--accent-butter)' }}>
+              <TrendingDown size={32} />
+            </div>
             <h4>89.2% Cost Savings</h4>
             <p>Reduces Fireworks API expenses significantly by filtering math, regex, parsing, and confident responses to free local resources.</p>
           </motion.div>
 
           <motion.div className="feature-card" variants={itemVariants} whileHover={{ y: -6 }}>
-            <div className="feature-icon">💻</div>
+            <div className="feature-icon" style={{ color: 'var(--accent-butter)' }}>
+              <Cpu size={32} />
+            </div>
             <h4>Local Model Solver</h4>
             <p>Uses a local model server hosting Gemma-3-12B-it to solve tasks locally at zero Fireworks Cloud API token cost.</p>
           </motion.div>
 
           <motion.div className="feature-card" variants={itemVariants} whileHover={{ y: -6 }}>
-            <div className="feature-icon">🗄️</div>
+            <div className="feature-icon" style={{ color: 'var(--accent-butter)' }}>
+              <Database size={32} />
+            </div>
             <h4>SQLite Telemetry Logs</h4>
             <p>Audits every routing run, recording task prompts, selected solvers, token counts, correctness checks, and execution times.</p>
           </motion.div>
 
           <motion.div className="feature-card" variants={itemVariants} whileHover={{ y: -6 }}>
-            <div className="feature-icon">🎛️</div>
+            <div className="feature-icon" style={{ color: 'var(--accent-butter)' }}>
+              <Sliders size={32} />
+            </div>
             <h4>Interactive Playground</h4>
             <p>Enables developers to submit custom queries, override model routing, and inspect the decision pipeline visually in real-time.</p>
           </motion.div>
@@ -155,17 +166,23 @@ export default function Home() {
             <div className="arch-step-header">1. Classifier</div>
             <p>Regex & heuristics identify task category (Math, Code, Factual, Sentiment, etc.).</p>
           </div>
-          <div className="arch-arrow">──►</div>
+          <div className="arch-arrow">
+            <ArrowRight size={20} />
+          </div>
           <div className="arch-step">
             <div className="arch-step-header">2. Tier-0 Solver</div>
             <p>Deterministic regex and mathematical parser handles tasks with 100% accuracy.</p>
           </div>
-          <div className="arch-arrow">──►</div>
+          <div className="arch-arrow">
+            <ArrowRight size={20} />
+          </div>
           <div className="arch-step">
             <div className="arch-step-header">3. Tier-1 Local LLM</div>
             <p>Local model server runs Gemma-3-12B-it self-consistency checks to resolve tasks for free.</p>
           </div>
-          <div className="arch-arrow">──►</div>
+          <div className="arch-arrow">
+            <ArrowRight size={20} />
+          </div>
           <div className="arch-step">
             <div className="arch-step-header">4. Escalation Tiers</div>
             <p>Escalates to Cheap or Strong Fireworks models only if local confidence is low.</p>
