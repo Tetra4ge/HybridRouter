@@ -154,7 +154,7 @@ export default function Home({ theme, toggleTheme }) {
               <Cpu size={32} />
             </div>
             <h4>Local Model Solver</h4>
-            <p>Uses a local model server hosting Gemma-3-12B-it to solve tasks locally at zero Fireworks Cloud API token cost.</p>
+            <p>Uses a local model server hosting Qwen-2.5-1.5B / Gemma-2B to solve tasks locally at zero Fireworks Cloud API token cost.</p>
           </motion.div>
 
           <motion.div className="feature-card" variants={itemVariants} whileHover={{ y: -6 }}>
@@ -203,7 +203,7 @@ export default function Home({ theme, toggleTheme }) {
           </div>
           <div className="arch-step">
             <div className="arch-step-header">3. Tier-1 Local LLM</div>
-            <p>Local model server runs Gemma-3-12B-it self-consistency checks to resolve tasks for free.</p>
+            <p>Local model server runs Qwen-2.5-1.5B / Gemma-2B self-consistency checks to resolve tasks for free.</p>
           </div>
           <div className="arch-arrow">
             <ArrowRight size={20} />

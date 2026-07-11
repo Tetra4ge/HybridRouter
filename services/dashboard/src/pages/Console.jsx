@@ -142,11 +142,11 @@ export default function Console({ theme, toggleTheme }) {
     <div className="dashboard-container">
       {/* Header */}
       <header className="dashboard-header">
-        <div className="logo-area" style={{ textAlign: 'left' }}>
+        <div className="logo-area" style={{ gap: '1.6rem' }}>
           <button className="back-btn" onClick={() => navigate('/')}>
             ◄ Back
           </button>
-          <h1 style={{ marginTop: '0.8rem' }}>Control Center Dashboard</h1>
+          <h1>Control Center Dashboard</h1>
         </div>
         <div style={{ display: 'flex', gap: '1.2rem', alignItems: 'center' }}>
           <button onClick={toggleTheme} className="theme-toggle-btn" aria-label="Toggle Theme">

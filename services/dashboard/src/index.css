@@ -701,7 +701,7 @@ tr:hover td {
 .home-container {
   max-width: 1300px;
   margin: 0 auto;
-  padding: 2rem 0;
+  padding: 0.5rem 0 2rem 0;
   text-align: center;
 }
 
@@ -994,5 +994,42 @@ tr:hover td {
     padding-top: 1.5rem;
   }
 }
+
+/* Custom Cursor styling */
+.custom-cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 32px;
+  height: 32px;
+  border: 2px solid var(--accent-color) !important;
+  border-radius: 50% !important; /* Force circle border for cursor */
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate3d(0, 0, 0);
+}
+
+.custom-cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  background-color: var(--accent-color);
+  border-radius: 50% !important; /* Force circle border for cursor */
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Hide standard cursor on desktop devices */
+@media (pointer: fine) {
+  body {
+    cursor: none;
+  }
+  a, button, select, input, textarea {
+    cursor: none !important;
+  }
+}
+
 
 
