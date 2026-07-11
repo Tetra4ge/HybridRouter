@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Sun, Moon } from 'lucide-react'
 import MetricsCards from '../components/MetricsCards'
 import Playground from '../components/Playground'
 import DecisionDistribution from '../components/DecisionDistribution'
 import LiveLogs from '../components/LiveLogs'
 
-export default function Console({ onBackToHome }) {
+export default function Console({ theme, toggleTheme }) {
+  const navigate = useNavigate()
   const [stats, setStats] = useState({
     totalRuns: 0,
     accuracy: 0,
@@ -139,15 +142,20 @@ export default function Console({ onBackToHome }) {
     <div className="dashboard-container">
       {/* Header */}
       <header className="dashboard-header">
-        <div className="logo-area" style={{ textAlign: 'left' }}>
-          <button className="back-btn" onClick={onBackToHome}>
-            ◄ Back to Portal Home
+        <div className="logo-area" style={{ gap: '1.6rem' }}>
+          <button className="back-btn" onClick={() => navigate('/')}>
+            ◄ Back
           </button>
-          <h1 style={{ marginTop: '0.8rem' }}>Control Center Dashboard</h1>
+          <h1>Control Center Dashboard</h1>
         </div>
-        <div className="status-badge">
-          <div className={`status-dot ${systemActive ? 'active' : 'inactive'}`} />
-          <span>{systemActive ? 'SYSTEM ACTIVE' : 'CONNECTION ERROR'}</span>
+        <div style={{ display: 'flex', gap: '1.2rem', alignItems: 'center' }}>
+          <button onClick={toggleTheme} className="theme-toggle-btn" aria-label="Toggle Theme">
+            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
+          <div className="status-badge">
+            <div className={`status-dot ${systemActive ? 'active' : 'inactive'}`} />
+            <span>{systemActive ? 'SYSTEM ACTIVE' : 'CONNECTION ERROR'}</span>
+          </div>
         </div>
       </header>
 

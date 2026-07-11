@@ -1,14 +1,12 @@
-# 🚀 HybridRouter — Token-Efficient Hybrid Routing Agent
+<p align="center">
+  <font size="6"><b>HybridRouter - Token-Efficient Hybrid Routing Agent</b></font>
+</p>
 
 > **AMD Developer Hackathon 2026 — Track 1: Hybrid Token-Efficient Routing Agent**
 >
 > A multi-tier intelligent routing system that maximizes task accuracy while minimizing Fireworks API token consumption. Uses deterministic solvers, local AMD GPU-accelerated models, and confidence-gated Fireworks escalation.
 
----
-
 ![Architecture Overview](docs/architecture_overview.png)
-
----
 
 ## 📋 Table of Contents
 
@@ -214,15 +212,35 @@ AMD_Developer_Hck/
 │   │   ├── package.json
 │   │   └── Dockerfile
 │   │
-│   ├── local-model-server/             # Python + FastAPI model server
-│   │   ├── main.py                     # FastAPI app
-│   │   ├── model_manager.py            # Model loading & inference
-│   │   ├── confidence_scorer.py        # Confidence scoring module
+│   ├── local-model-server/             # Python + FastAPI model server (modular)
+│   │   ├── main.py                     # FastAPI entry point
+│   │   ├── api/
+│   │   │   └── routes.py               # API endpoints
+│   │   ├── schemas/
+│   │   │   └── payloads.py             # Pydantic schemas
+│   │   ├── services/
+│   │   │   ├── model_manager.py        # Lazy model loader & HF runner
+│   │   │   └── confidence_scorer.py    # Self-consistency & logprobs scorer
+│   │   ├── scripts/
+│   │   │   └── download_model.py       # Offline model pre-cacher
 │   │   ├── requirements.txt
 │   │   └── Dockerfile
 │   │
 │   └── dashboard/                      # React + Vite frontend
 │       ├── src/
+│       │   ├── components/
+│       │   │   ├── CustomCursor.jsx    # Fluid custom mouse tracking dot
+│       │   │   ├── SavingsCalculator.jsx # Token cost savings calculator
+│       │   │   ├── Footer.jsx          # Copyright & Hackathon footer
+│       │   │   ├── MetricsCards.jsx    # Token saving and latency stat boxes
+│       │   │   ├── Playground.jsx      # Interactive router tester form
+│       │   │   ├── DecisionDistribution.jsx # Tier selection charts
+│       │   │   └── LiveLogs.jsx        # Audit log datatable
+│       │   ├── pages/
+│       │   │   ├── Home.jsx            # Portal landing page
+│       │   │   └── Console.jsx         # Control Center page
+│       │   ├── App.jsx                 # Routes & global theme configuration
+│       │   └── index.css               # Monochrome styling tokens
 │       ├── package.json
 │       └── Dockerfile
 │
@@ -321,6 +339,6 @@ See [LICENSE](LICENSE) for details.
 ---
 
 <p align="center">
-  <b>Built for AMD Developer Hackathon 2026 — Track 1</b><br/>
+  <b>Built for AMD Developer Hackathon 2026 - Track 1</b><br/>
   <i>Maximize accuracy. Minimize tokens. Win.</i>
 </p>
