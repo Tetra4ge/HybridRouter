@@ -4,8 +4,8 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "dev": "node src/server.js",
-    "start": "node src/server.js",
+    "dev": "nodemon server.js",
+    "start": "node server.js",
     "evaluate": "node main.js",
     "eval:tier0": "node ../../eval/eval_runner.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -19,6 +19,7 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "mathjs": "^14.0.1",
+    "nodemon": "^3.1.14",
     "openai": "^4.80.0"
   }
 }

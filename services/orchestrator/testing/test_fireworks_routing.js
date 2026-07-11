@@ -9,7 +9,7 @@ const originalFetch = globalThis.fetch;
 
 globalThis.fetch = async (url, options) => {
   const urlStr = typeof url === 'string' ? url : url.toString();
-  
+
   // Intercept Hugging Face Serverless (Tier-1 Local LLM)
   if (urlStr.includes('router.huggingface.co')) {
     const nextSample = mockSamples.shift() || mockLocalAnswer;
@@ -36,7 +36,7 @@ globalThis.fetch = async (url, options) => {
 process.env.TEST_MOCK_FIREWORKS = 'true';
 
 // Dynamically import solveTask
-const { solveTask } = await import('./src/router.js');
+import { solveTask } from '../services/router.js';
 
 console.log("=== Fireworks Routing Verification ===");
 
@@ -90,7 +90,7 @@ async function runRoutingTest() {
     console.log(`\n--------------------------------------------`);
     console.log(`Task: ${task.id} (${task.category})`);
     task.setup();
-    
+
     try {
       const result = await solveTask(task);
       console.log(`Router Result Answer: "${result.answer}"`);

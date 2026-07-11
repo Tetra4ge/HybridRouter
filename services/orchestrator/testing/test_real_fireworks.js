@@ -1,4 +1,4 @@
-import { callFireworks } from './src/solvers/fireworksClient.js';
+import { safeFireworksCall } from '../services/solvers/fireworksClient.js';
 import dotenv from 'dotenv';
 
 dotenv.config({ path: '../../.env' });
@@ -36,7 +36,7 @@ async function testConnection() {
     console.log("Latency: ", result.latencyMs, "ms");
     console.log("Tokens Used: ", result.totalTokens, `(Prompt: ${result.promptTokens}, Completion: ${result.completionTokens})`);
     console.log("-----------------------------------------");
-    
+
     if (result.answer.toUpperCase().includes("SUCCESS")) {
       console.log("✅ SUCCESS: Real Fireworks API connection is working perfectly!");
     } else {

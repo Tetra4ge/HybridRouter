@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  local-model-server:
+    build:
+      context: ./services/local-model-server
+    ports:
+      - "8000:8000"
+    environment:
+      - LOG_LEVEL=info
+    devices:
+      # AMD GPU Passthrough
+      - /dev/kfd:/dev/kfd
+      - /dev/dri:/dev/dri
+    volumes:
+      # Cache HuggingFace models locally so they don't redownload
+      - ./data/huggingface:/root/.cache/huggingface
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  orchestrator:
+    build:
+      context: ./services/orchestrator
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    environment:
+      # Point to the Docker network hostname
+      - LOCAL_MODEL_URL=http://local-model-server:8000
+    depends_on:
+      local-model-server:
+        condition: service_healthy
+    volumes:
+      - ./data/logs:/app/data/logs
+
+  dashboard:
+    build:
+      context: ./services/dashboard
+    ports:
+      - "80:80"
+    depends_on:
+      - orchestrator
+
+  # This is the headless evaluator for the judges.
+  # Run this using: docker compose --profile eval up evaluator
+  evaluator:
+    build:
+      context: ./services/orchestrator
+    command: npm run evaluate
+    profiles:
+      - eval
+    env_file:
+      - .env
+    environment:
+      - LOCAL_MODEL_URL=http://local-model-server:8000
+    depends_on:
+      local-model-server:
+        condition: service_healthy
+    volumes:
+      # Map the judge's input and output folders
+      - ./input:/input
+      - ./output:/output
+      - ./data/logs:/app/data/logs
