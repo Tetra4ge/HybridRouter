@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import MetricsCards from '../components/MetricsCards'
 import Playground from '../components/Playground'
 import DecisionDistribution from '../components/DecisionDistribution'
 import LiveLogs from '../components/LiveLogs'
 
-export default function Console({ onBackToHome }) {
+export default function Console() {
+  const navigate = useNavigate()
   const [stats, setStats] = useState({
     totalRuns: 0,
     accuracy: 0,
@@ -140,7 +142,7 @@ export default function Console({ onBackToHome }) {
       {/* Header */}
       <header className="dashboard-header">
         <div className="logo-area" style={{ textAlign: 'left' }}>
-          <button className="back-btn" onClick={onBackToHome}>
+          <button className="back-btn" onClick={() => navigate('/')}>
             ◄ Back to Portal Home
           </button>
           <h1 style={{ marginTop: '0.8rem' }}>Control Center Dashboard</h1>

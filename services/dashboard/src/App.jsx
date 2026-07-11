@@ -1,16 +1,17 @@
-import { useState } from 'react'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './App.css'
 import Home from './pages/Home'
 import Console from './pages/Console'
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('home') // 'home' or 'console'
-
-  if (currentPage === 'home') {
-    return <Home onLaunchConsole={() => setCurrentPage('console')} />
-  }
-
-  return <Console onBackToHome={() => setCurrentPage('home')} />
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/console" element={<Console />} />
+      </Routes>
+    </BrowserRouter>
+  )
 }
 
 export default App

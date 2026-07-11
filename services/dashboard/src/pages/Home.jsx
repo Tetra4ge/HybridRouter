@@ -1,4 +1,8 @@
-export default function Home({ onLaunchConsole }) {
+import { useNavigate } from 'react-router-dom'
+
+export default function Home() {
+  const navigate = useNavigate()
+
   return (
     <div className="home-container">
       {/* Header */}
@@ -7,7 +11,7 @@ export default function Home({ onLaunchConsole }) {
           <h1>HybridRouter</h1>
           <p>Task Solver & Token Optimization Router — Track 1</p>
         </div>
-        <button className="cta-launch-btn" onClick={onLaunchConsole}>
+        <button className="cta-launch-btn" onClick={() => navigate('/console')}>
           Launch Control Center ──►
         </button>
       </header>
@@ -20,7 +24,7 @@ export default function Home({ onLaunchConsole }) {
           An intelligent, multi-tier waterfall router that maximizes task-solving accuracy while minimizing Fireworks Cloud API token costs.
         </p>
         <div style={{ marginTop: '2.5rem', display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-          <button className="playground-btn" style={{ padding: '0.8rem 2rem', fontSize: '1rem', height: 'auto' }} onClick={onLaunchConsole}>
+          <button className="playground-btn" style={{ padding: '0.8rem 2rem', fontSize: '1rem', height: 'auto' }} onClick={() => navigate('/console')}>
             Open Live Console
           </button>
           <a 
