@@ -39,20 +39,19 @@ export default function Home() {
       animate="visible"
       variants={containerVariants}
     >
-      {/* Header */}
+      {/* Header / Navbar */}
       <motion.header className="dashboard-header" variants={itemVariants}>
-        <div className="logo-area" style={{ textAlign: 'left' }}>
+        <div className="logo-area">
+          <div className="logo-icon-box">
+            <Cpu size={22} />
+          </div>
           <h1 style={{ fontFamily: 'var(--display)' }}>HybridRouter</h1>
-          <p>Task Solver & Token Optimization Router — Track 1</p>
         </div>
-        <motion.button 
-          className="primary-btn" 
-          onClick={() => navigate('/console')}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          Launch Control Center &nbsp; <ChevronRight size={18} />
-        </motion.button>
+
+        <nav className="navbar-links">
+          <a href="#features" className="nav-link">Features</a>
+          <a href="#architecture" className="nav-link">Architecture</a>
+        </nav>
       </motion.header>
 
       {/* Hero Section */}
@@ -99,7 +98,7 @@ export default function Home() {
       </section>
 
       {/* Key Features Grid */}
-      <motion.section className="features-section" variants={containerVariants}>
+      <motion.section id="features" className="features-section" variants={containerVariants}>
         <motion.h3 className="section-title" variants={itemVariants}>
           Core Architecture Features
         </motion.h3>
