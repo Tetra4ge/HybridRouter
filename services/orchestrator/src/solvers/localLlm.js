@@ -14,6 +14,7 @@ const LOCAL_MODEL_URL = process.env.LOCAL_MODEL_URL || 'http://localhost:8000';
  * @returns {Object|null} The response object or null if execution failed.
  */
 export async function solveWithLocalModel(task, category) {
+  const startTime = Date.now();
   try {
     // Set max_tokens based on category as per token optimization guidelines
     let maxTokens = 100;
@@ -76,6 +77,7 @@ export async function solveWithLocalModel(task, category) {
         promptTokens: 0, // HF Serverless is free for the hackathon (no Fireworks tokens spent)
         completionTokens: 0,
         totalTokens: 0,
+        latencyMs: Date.now() - startTime,
       };
     } else {
       const response = await fetch(`${LOCAL_MODEL_URL}/inference/consistency`, {
@@ -105,6 +107,7 @@ export async function solveWithLocalModel(task, category) {
         promptTokens: 0,
         completionTokens: 0,
         totalTokens: 0,
+        latencyMs: Date.now() - startTime,
       };
     }
   } catch (error) {

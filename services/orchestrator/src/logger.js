@@ -62,3 +62,137 @@ export function logTask(entry) {
     latencyMs: entry.latencyMs || null,
   });
 }
+
+export function getLastLogForTask(taskId) {
+  try {
+    const row = db.prepare('SELECT id, tier_used, model_used, prompt_tokens, completion_tokens, total_tokens, latency_ms FROM task_logs WHERE task_id = ? ORDER BY id DESC LIMIT 1').get(taskId);
+    return row || { tier_used: 'unknown', prompt_tokens: 0, completion_tokens: 0, total_tokens: 0, latency_ms: 0 };
+  } catch (err) {
+    return { tier_used: 'unknown', prompt_tokens: 0, completion_tokens: 0, total_tokens: 0, latency_ms: 0 };
+  }
+}
+
+export function closeDatabase() {
+  db.close();
+}
+
+export function updateTaskCorrectness(taskId, isCorrect) {
+  try {
+    const stmt = db.prepare(`
+      UPDATE task_logs 
+      SET is_correct = ? 
+      WHERE id = (SELECT id FROM task_logs WHERE task_id = ? ORDER BY id DESC LIMIT 1)
+    `);
+    stmt.run(isCorrect ? 1 : 0, taskId);
+  } catch (err) {
+    console.error(`[Logger] Failed to update correctness for task ${taskId}:`, err.message);
+  }
+}
+
+export function getRecentLogs(limit = 100) {
+  try {
+    return db.prepare(`
+      SELECT id, task_id, category, tier_used, model_used, solver_type, 
+             prompt_tokens, completion_tokens, total_tokens, confidence, 
+             was_escalated, escalation_reason, answer, is_correct, latency_ms, created_at 
+      FROM task_logs 
+      ORDER BY created_at DESC 
+      LIMIT ?
+    `).all(limit);
+  } catch (err) {
+    console.error('[Logger] Failed to get recent logs:', err.message);
+    return [];
+  }
+}
+
+export function getSystemStats() {
+  try {
+    const rows = db.prepare(`
+      SELECT tier_used, model_used, prompt_tokens, completion_tokens, total_tokens, latency_ms, is_correct 
+      FROM task_logs
+    `).all();
+    return calculateStatsFromRows(rows);
+  } catch (err) {
+    console.error('[Logger] Failed to get system stats:', err.message);
+    return null;
+  }
+}
+
+function calculateStatsFromRows(rows) {
+  const totalRuns = rows.length;
+  if (totalRuns === 0) {
+    return {
+      totalRuns: 0,
+      accuracy: 0,
+      totalTokens: 0,
+      actualCost: 0,
+      naiveCost: 0,
+      savingsPercent: 0,
+      tierCounts: {},
+      avgLatency: 0,
+      p95Latency: 0
+    };
+  }
+
+  let correctCount = 0;
+  let totalTokens = 0;
+  let actualCost = 0;
+  let naiveCost = 0;
+  const latencies = [];
+  const tierCounts = {
+    'tier-0': 0,
+    'tier-1': 0,
+    'tier-1-verified': 0,
+    'tier-2': 0,
+    'tier-3': 0,
+    'fallback': 0
+  };
+
+  // Cost factors
+  const CHEAP_IN_COST = 0.20e-6;
+  const CHEAP_OUT_COST = 0.20e-6;
+  const STRONG_IN_COST = 1.74e-6;
+  const STRONG_OUT_COST = 3.48e-6;
+
+  rows.forEach(row => {
+    if (row.is_correct === 1) correctCount++;
+    totalTokens += row.total_tokens || 0;
+    if (row.latency_ms) latencies.push(row.latency_ms);
+
+    const tier = row.tier_used || 'unknown';
+    tierCounts[tier] = (tierCounts[tier] || 0) + 1;
+
+    // Actual Cost
+    let taskCost = 0;
+    if (tier === 'tier-1-verified' || tier === 'tier-2') {
+      taskCost = (row.prompt_tokens * CHEAP_IN_COST) + (row.completion_tokens * CHEAP_OUT_COST);
+    } else if (tier === 'tier-3') {
+      taskCost = (row.prompt_tokens * STRONG_IN_COST) + (row.completion_tokens * STRONG_OUT_COST);
+    }
+    actualCost += taskCost;
+
+    // Naive Cost Estimation (All sent directly to Tier-3 Strong model without compression)
+    const naivePrompt = 150;
+    const naiveCompletion = row.completion_tokens || 120;
+    const taskNaiveCost = (naivePrompt * STRONG_IN_COST) + (naiveCompletion * STRONG_OUT_COST);
+    naiveCost += taskNaiveCost;
+  });
+
+  const sortedLats = [...latencies].sort((a, b) => a - b);
+  const avgLatency = latencies.reduce((s, v) => s + v, 0) / latencies.length || 0;
+  const p95Latency = sortedLats[Math.floor(sortedLats.length * 0.95)] || 0;
+
+  return {
+    totalRuns,
+    accuracy: totalRuns > 0 ? (correctCount / totalRuns) * 100 : 0,
+    totalTokens,
+    actualCost,
+    naiveCost,
+    savingsPercent: naiveCost > 0 ? ((naiveCost - actualCost) / naiveCost) * 100 : 0,
+    tierCounts,
+    avgLatency,
+    p95Latency
+  };
+}
+
+

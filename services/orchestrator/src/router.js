@@ -87,9 +87,10 @@ function computeConfidence(answer, consistency, category) {
   );
 }
 
-export async function solveTask(task) {
+export async function solveTask(task, customThresholds = null) {
   const { category, confidence: classConfidence, method } = classify(task);
   const startTime = Date.now();
+  const t = customThresholds?.[category] || THRESHOLDS[category] || { high: 0.85, medium: 0.60, low: 0.35 };
 
   // --- Tier 0: Deterministic Solver ---
   const deterministicResult = tryDeterministicSolve(task, category);
@@ -119,7 +120,6 @@ export async function solveTask(task) {
   
   if (localLlmResult) {
     localConfidence = computeConfidence(localLlmResult.answer, localLlmResult.confidence, category);
-    const t = THRESHOLDS[category] || { high: 0.85, medium: 0.60, low: 0.35 };
 
     // Action 1: Accept Local Direct
     if (localConfidence >= t.high) {
@@ -175,7 +175,6 @@ export async function solveTask(task) {
   }
 
   // --- Tier 2 / 3: Fireworks Cloud Escalation ---
-  const t = THRESHOLDS[category] || { high: 0.85, medium: 0.60, low: 0.35 };
   const cheapModel = MODEL_MAP[category]?.cheap || 'glm-5p1';
   const strongModel = MODEL_MAP[category]?.strong || 'deepseek-v4-pro';
   
