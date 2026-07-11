@@ -36,7 +36,7 @@ globalThis.fetch = async (url, options) => {
 process.env.TEST_MOCK_FIREWORKS = 'true';
 
 // Dynamically import solveTask
-const { solveTask } = await import('./src/router.js');
+import { solveTask } from './services/router.js';
 
 console.log("=== Fireworks Routing Verification ===");
 

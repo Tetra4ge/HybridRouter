@@ -1,4 +1,4 @@
-import { solveWithLocalModel } from './src/solvers/localLlm.js';
+import { solveWithLocalModel } from './services/solvers/localLlm.js';
 import dotenv from 'dotenv';
 import path from 'path';
 

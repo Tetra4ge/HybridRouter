@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
-import { solveTask } from './src/router.js';
+import { solveTask } from './services/router.js';
 
 dotenv.config({ path: '../../.env' });
 
