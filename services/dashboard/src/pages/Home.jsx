@@ -8,7 +8,8 @@ import {
   Database, 
   Sliders, 
   ArrowRight,
-  ChevronRight
+  Sun,
+  Moon
 } from 'lucide-react'
 
 // Animation variants
@@ -29,7 +30,7 @@ const itemVariants = {
   }
 }
 
-export default function Home() {
+export default function Home({ theme, toggleTheme }) {
   const navigate = useNavigate()
 
   return (
@@ -51,6 +52,9 @@ export default function Home() {
         <nav className="navbar-links">
           <a href="#features" className="nav-link">Features</a>
           <a href="#architecture" className="nav-link">Architecture</a>
+          <button onClick={toggleTheme} className="theme-toggle-btn" aria-label="Toggle Theme">
+            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
         </nav>
       </motion.header>
 

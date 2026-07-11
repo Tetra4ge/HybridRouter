@@ -1,18 +1,37 @@
 :root {
-  --bg-color: #ffedab; /* Butter Background */
-  --card-bg: #75070c; /* Cherry Cards */
-  --border-color: transparent; /* Strictly no borders */
+  /* Dark mode (default) */
+  --bg-color: #0a0a0a;
+  --card-bg: #141414;
+  --text-main: #f5f5f5;
+  --text-muted: rgba(245, 245, 245, 0.6);
+  --text-on-card: #f5f5f5;
+  --text-on-card-muted: rgba(245, 245, 245, 0.6);
+  --border-color: rgba(245, 245, 245, 0.15);
   
-  --accent-cherry: #75070c;
-  --accent-butter: #ffedab;
-  --text-main: #75070c; /* Cherry main text */
-  --text-muted: rgba(117, 7, 12, 0.7);
-  --text-on-card: #ffedab; /* Butter text inside Cherry cards */
-  --text-on-card-muted: rgba(255, 237, 171, 0.7);
+  --accent-color: #f5f5f5;
+  --button-bg: #f5f5f5;
+  --button-text: #0a0a0a;
+  --shadow-color: rgba(245, 245, 245, 0.15);
   
   --sans: 'Saira', sans-serif;
   --display: 'Ancola', 'Cinzel', serif;
   --mono: 'JetBrains Mono', monospace;
+}
+
+[data-theme='light'] {
+  /* Light mode */
+  --bg-color: #f5f5f5;
+  --card-bg: #ffffff;
+  --text-main: #0a0a0a;
+  --text-muted: rgba(10, 10, 10, 0.6);
+  --text-on-card: #0a0a0a;
+  --text-on-card-muted: rgba(10, 10, 10, 0.6);
+  --border-color: rgba(10, 10, 10, 0.15);
+  
+  --accent-color: #0a0a0a;
+  --button-bg: #0a0a0a;
+  --button-text: #f5f5f5;
+  --shadow-color: rgba(10, 10, 10, 0.15);
 }
 
 * {
@@ -30,6 +49,7 @@ body {
   padding: 2rem;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 /* Scrollbars */
@@ -41,7 +61,7 @@ body {
   background: var(--bg-color);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--accent-cherry);
+  background: var(--accent-color);
 }
 
 .dashboard-container {
@@ -55,7 +75,7 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2.5rem;
-  border-bottom: 3px solid var(--accent-cherry) !important;
+  border-bottom: 3px solid var(--accent-color) !important;
   padding-bottom: 1rem;
 }
 
@@ -67,29 +87,26 @@ body {
 }
 
 .logo-icon-box {
-  background: var(--accent-cherry);
-  color: var(--accent-butter);
+  background: var(--accent-color);
+  color: var(--bg-color);
   padding: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.15);
+  box-shadow: 3px 3px 0px var(--shadow-color);
 }
 
 .logo-area h1 {
   font-size: 1.8rem;
   font-weight: 800;
-  color: var(--accent-cherry);
+  color: var(--accent-color);
   line-height: 1;
 }
 
-.logo-area p {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  margin-top: 0.2rem;
-  font-weight: 700;
-  letter-spacing: 1px;
-  text-transform: uppercase;
+h1, h2, h3, h4 {
+  font-family: var(--display);
+  letter-spacing: 0.5px;
+  color: var(--accent-color);
 }
 
 .navbar-links {
@@ -99,7 +116,7 @@ body {
 }
 
 .nav-link {
-  color: var(--accent-cherry);
+  color: var(--accent-color);
   text-decoration: none;
   font-weight: 800;
   font-size: 0.85rem;
@@ -112,18 +129,32 @@ body {
 }
 
 .nav-link:hover {
-  border-color: var(--accent-cherry) !important;
+  border-color: var(--accent-color) !important;
+}
+
+.theme-toggle-btn {
+  background: transparent;
+  color: var(--accent-color);
+  padding: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s;
+}
+.theme-toggle-btn:hover {
+  opacity: 0.75;
 }
 
 .status-badge {
   display: flex;
   align-items: center;
-  background: var(--accent-cherry);
+  background: var(--card-bg);
   padding: 0.6rem 1.4rem;
   font-size: 0.85rem;
   font-weight: 700;
   color: var(--text-on-card);
-  box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.15);
+  box-shadow: 4px 4px 0px var(--shadow-color);
 }
 
 .status-dot {
@@ -158,14 +189,14 @@ body {
   background: var(--card-bg);
   padding: 1.8rem;
   color: var(--text-on-card);
-  box-shadow: 6px 6px 0px rgba(117, 7, 12, 0.2);
+  box-shadow: 6px 6px 0px var(--shadow-color);
   transition: all 0.2s ease-in-out;
   text-align: left;
 }
 
 .metric-card:hover {
   transform: translate(-3px, -3px);
-  box-shadow: 9px 9px 0px rgba(117, 7, 12, 0.35);
+  box-shadow: 9px 9px 0px var(--shadow-color);
 }
 
 .metric-title {
@@ -183,7 +214,7 @@ body {
   letter-spacing: -0.5px;
   line-height: 1.1;
   margin-bottom: 0.4rem;
-  color: var(--accent-butter);
+  color: var(--accent-color);
   font-family: var(--display);
 }
 
@@ -207,7 +238,7 @@ body {
   background: var(--card-bg);
   padding: 1.8rem;
   color: var(--text-on-card);
-  box-shadow: 6px 6px 0px rgba(117, 7, 12, 0.2);
+  box-shadow: 6px 6px 0px var(--shadow-color);
   text-align: left;
 }
 
@@ -221,7 +252,7 @@ body {
   align-items: center;
   border-bottom: 2px solid var(--border-color) !important;
   padding-bottom: 0.8rem;
-  color: var(--accent-butter);
+  color: var(--accent-color);
 }
 
 /* Live logs Table */
@@ -241,7 +272,7 @@ th {
   padding: 1rem;
   font-weight: 700;
   color: var(--text-on-card-muted);
-  border-bottom: 2px solid var(--accent-butter) !important;
+  border-bottom: 2px solid var(--accent-color) !important;
   text-transform: uppercase;
   font-size: 0.8rem;
   letter-spacing: 1px;
@@ -249,13 +280,17 @@ th {
 
 td {
   padding: 1rem;
-  border-bottom: 1px solid rgba(255, 237, 171, 0.1) !important;
+  border-bottom: 1px solid var(--border-color) !important;
   vertical-align: middle;
   color: var(--text-on-card);
 }
 
 tr:hover td {
-  background: rgba(255, 237, 171, 0.05);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme='light'] tr:hover td {
+  background: rgba(0, 0, 0, 0.03);
 }
 
 .badge {
@@ -268,10 +303,10 @@ tr:hover td {
 }
 
 .badge.tier-0 { background: #00e676; color: #080304; }
-.badge.tier-1 { background: var(--accent-butter); color: var(--accent-cherry); }
+.badge.tier-1 { background: var(--bg-color); color: var(--text-main); border: 1px solid var(--border-color) !important; }
 .badge.tier-1-verified { background: #00e5ff; color: #080304; }
 .badge.tier-2 { background: #ff9100; color: #080304; }
-.badge.tier-3 { background: #ef5350; color: #ffffff; }
+.badge.tier-3 { background: #ff1744; color: #ffffff; }
 .badge.fallback { background: #ffffff; color: #080304; }
 
 .correct-icon { color: #00e676; font-size: 1.1rem; font-weight: bold; }
@@ -289,7 +324,7 @@ tr:hover td {
   background: var(--card-bg);
   padding: 1.8rem;
   color: var(--text-on-card);
-  box-shadow: 6px 6px 0px rgba(117, 7, 12, 0.2);
+  box-shadow: 6px 6px 0px var(--shadow-color);
   text-align: left;
 }
 
@@ -319,6 +354,7 @@ tr:hover td {
 .progress-bar-bg {
   height: 8px;
   background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border-color) !important;
 }
 
 .progress-bar-fill {
@@ -328,9 +364,9 @@ tr:hover td {
 }
 
 .progress-bar-fill.t0 { background: #00e676; }
-.progress-bar-fill.t1 { background: var(--accent-butter); }
+.progress-bar-fill.t1 { background: var(--accent-color); }
 .progress-bar-fill.t2 { background: #ff9100; }
-.progress-bar-fill.t3 { background: #ef5350; }
+.progress-bar-fill.t3 { background: #ff1744; }
 
 @media (max-width: 1000px) {
   .dashboard-middle {
@@ -365,18 +401,18 @@ tr:hover td {
 }
 
 .playground-btn {
-  background: var(--accent-butter);
-  color: var(--accent-cherry);
+  background: var(--button-bg);
+  color: var(--button-text);
   padding: 0 1.5rem;
   font-weight: 800;
   font-size: 0.95rem;
   cursor: pointer;
-  box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.2);
+  box-shadow: 4px 4px 0px var(--shadow-color);
   transition: all 0.2s;
 }
 .playground-btn:hover {
   transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.3);
+  box-shadow: 6px 6px 0px var(--shadow-color);
 }
 .playground-btn:disabled {
   opacity: 0.6;
@@ -387,7 +423,7 @@ tr:hover td {
 .routing-visual-container {
   margin-top: 1.5rem;
   padding-top: 1.5rem;
-  border-top: 2px solid var(--accent-butter) !important;
+  border-top: 2px solid var(--border-color) !important;
 }
 
 .visual-title {
@@ -434,7 +470,7 @@ tr:hover td {
   font-size: 0.8rem;
   font-weight: 700;
   margin-bottom: 0.4rem;
-  background: rgba(255, 237, 171, 0.1);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .step-label {
@@ -520,8 +556,8 @@ tr:hover td {
 
 /* Centralized Button Design */
 .primary-btn {
-  background: var(--accent-cherry);
-  color: var(--accent-butter) !important;
+  background: var(--button-bg);
+  color: var(--button-text) !important;
   padding: 0.8rem 1.8rem;
   font-weight: 700;
   font-size: 0.95rem;
@@ -530,18 +566,18 @@ tr:hover td {
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.15);
+  box-shadow: 4px 4px 0px var(--shadow-color);
   transition: all 0.2s;
 }
 .primary-btn:hover {
   transform: translate(-3px, -3px);
-  box-shadow: 7px 7px 0px rgba(0, 0, 0, 0.25);
+  box-shadow: 7px 7px 0px var(--shadow-color);
 }
 
 .secondary-btn {
-  background: transparent;
-  color: var(--accent-cherry) !important;
-  border: 3px solid var(--accent-cherry) !important;
+  background: var(--card-bg);
+  color: var(--accent-color) !important;
+  border: none !important;
   padding: 0.8rem 1.8rem;
   font-weight: 700;
   font-size: 0.95rem;
@@ -550,13 +586,17 @@ tr:hover td {
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  box-shadow: 4px 4px 0px rgba(117, 7, 12, 0.15);
+  box-shadow: 4px 4px 0px var(--shadow-color);
   transition: all 0.2s;
 }
 .secondary-btn:hover {
   transform: translate(-3px, -3px);
-  box-shadow: 7px 7px 0px rgba(117, 7, 12, 0.25);
-  background: rgba(117, 7, 12, 0.05);
+  box-shadow: 7px 7px 0px var(--shadow-color);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme='light'] .secondary-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
 }
 
 .home-hero {
@@ -567,14 +607,14 @@ tr:hover td {
 }
 
 .hero-badge {
-  background: var(--accent-cherry);
+  background: var(--card-bg);
   color: var(--text-on-card);
   padding: 0.4rem 1.2rem;
   font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 1.5px;
   margin-bottom: 1.8rem;
-  box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.15);
+  box-shadow: 3px 3px 0px var(--shadow-color);
 }
 
 .home-hero h2 {
@@ -582,7 +622,7 @@ tr:hover td {
   font-weight: 800;
   letter-spacing: -0.5px;
   margin-bottom: 1.2rem;
-  color: var(--accent-cherry);
+  color: var(--accent-color);
 }
 
 .hero-subtitle {
@@ -601,9 +641,9 @@ tr:hover td {
   font-weight: 800;
   margin-bottom: 2.2rem;
   letter-spacing: -0.5px;
-  color: var(--accent-cherry);
+  color: var(--accent-color);
   text-align: left;
-  border-left: 5px solid var(--accent-cherry) !important;
+  border-left: 5px solid var(--accent-color) !important;
   padding-left: 1rem;
   font-family: var(--display);
 }
@@ -618,25 +658,26 @@ tr:hover td {
   background: var(--card-bg);
   padding: 2.2rem 2rem;
   text-align: left;
-  box-shadow: 6px 6px 0px rgba(117, 7, 12, 0.2);
+  box-shadow: 6px 6px 0px var(--shadow-color);
   transition: all 0.2s;
   color: var(--text-on-card);
 }
 .feature-card:hover {
   transform: translate(-3px, -3px);
-  box-shadow: 9px 9px 0px rgba(117, 7, 12, 0.35);
+  box-shadow: 9px 9px 0px var(--shadow-color);
 }
 
 .feature-icon {
   font-size: 2rem;
   margin-bottom: 1.4rem;
+  color: var(--accent-color);
 }
 
 .feature-card h4 {
   font-size: 1.3rem;
   font-weight: 800;
   margin-bottom: 0.6rem;
-  color: var(--accent-butter);
+  color: var(--accent-color);
   font-family: var(--display);
 }
 
@@ -657,7 +698,7 @@ tr:hover td {
   justify-content: space-between;
   background: var(--card-bg);
   padding: 3rem 2rem;
-  box-shadow: 6px 6px 0px rgba(117, 7, 12, 0.2);
+  box-shadow: 6px 6px 0px var(--shadow-color);
   overflow-x: auto;
   gap: 1.5rem;
 }
@@ -671,9 +712,9 @@ tr:hover td {
 .arch-step-header {
   font-size: 1.1rem;
   font-weight: 800;
-  color: var(--accent-butter);
+  color: var(--accent-color);
   margin-bottom: 0.6rem;
-  border-bottom: 2px solid var(--accent-butter) !important;
+  border-bottom: 2px solid var(--accent-color) !important;
   padding-bottom: 0.5rem;
   display: inline-block;
   font-family: var(--display);
@@ -693,16 +734,16 @@ tr:hover td {
 
 /* Back Button */
 .back-btn {
-  background: var(--accent-cherry);
-  color: var(--text-on-card);
+  background: var(--button-bg);
+  color: var(--button-text);
   padding: 0.5rem 1.2rem;
   font-size: 0.85rem;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.15);
+  box-shadow: 4px 4px 0px var(--shadow-color);
   transition: all 0.2s;
 }
 .back-btn:hover {
   transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.25);
+  box-shadow: 6px 6px 0px var(--shadow-color);
 }

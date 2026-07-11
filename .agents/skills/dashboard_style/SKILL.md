@@ -8,11 +8,11 @@ description: "Applies the custom Butter and Cherry design system for building th
 Use this system for all styling, styling tokens, components, and layouts of the dashboard frontend.
 
 ## 🎨 Theme Colors
-*   **Background:** `#FFEDAB` (Butter) (Used for page background).
-*   **Accent & Text (Cherry):** `#75070C` (Used for headers, text, primary buttons, and card background blocks).
-*   **Contrast (Butter):** `#FFEDAB` (Used for text and details inside Cherry-colored cards).
+*   **Dark Mode Colors:** Background `#0a0a0a` (almost pure black), text/accent `#f5f5f5` (off-white).
+*   **Light Mode Colors:** Background `#f5f5f5` (off-white), text/accent `#0a0a0a` (almost pure black).
+*   **Theme Toggle:** Implement a dynamic theme toggle to switch between the two contrasting modes.
 *   **Icons:** **STRICTLY USE LUCIDE REACT ICONS**. Emojis or cheap icon packs are forbidden. Import clean vector icons from `lucide-react`.
-*   **Theme Vibe:** A high-contrast, bold, neo-minimalist aesthetic using solid Butter background and solid Cherry blocks.
+*   **Theme Vibe:** A premium, ultra-high-contrast minimalist mono design system. Solid block colors, clean transitions, and no gradients.
 
 ## ✍️ Typography
 *   **Headers & Titles:** **Ancola** (with **Cinzel** fallback) for display titles.
@@ -20,7 +20,7 @@ Use this system for all styling, styling tokens, components, and layouts of the 
 
 ## 🚀 Component Guidelines
 *   **Micro-animations:** Always use `framer-motion` for transitions, card hover scales, and data list reveals.
-*   **Borders & Corners:** **STRICTLY NO BORDERS AND NO BORDER RADIUS**. Set `border: none` (or `0`) and `border-radius: 0` everywhere. Corners must be perfectly sharp.
+*   **Borders & Corners:** **STRICTLY NO BORDERS AND NO BORDER RADIUS**. Set `border: none` (or `0`) and `border-radius: 0` everywhere. Corners must be perfectly sharp. Buttons should use solid background blocks (like card-bg) with only a shadow offset and no outline borders.
 *   **Layout:** Keep layouts responsive, utilizing solid block backgrounds instead of outlines to separate content.
 
 ## ✨ Premium Feel & Rich Aesthetics
