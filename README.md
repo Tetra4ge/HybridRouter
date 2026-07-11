@@ -153,6 +153,10 @@ npm run dev
 # 4. Run the evaluation
 cd services/orchestrator
 npm run evaluate
+
+# 5. (Optional) Check or Clear in-memory cache
+curl http://localhost:3000/api/cache/stats
+curl -X POST http://localhost:3000/api/cache/clear
 ```
 
 ---
