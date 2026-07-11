@@ -4,6 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { solveTask } from './router.js';
 import { getRecentLogs, getSystemStats } from './logger.js';
+import { getCacheStats, clearCache } from './cache.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -55,6 +56,17 @@ app.get('/api/stats', (req, res) => {
     console.error('Error fetching stats:', error);
     res.status(500).json({ error: 'Failed to retrieve statistics' });
   }
+});
+
+// GET /api/cache/stats -> Cache hit/miss/size metrics
+app.get('/api/cache/stats', (req, res) => {
+  res.json(getCacheStats());
+});
+
+// POST /api/cache/clear -> Flush the in-memory cache
+app.post('/api/cache/clear', (req, res) => {
+  clearCache();
+  res.json({ success: true, message: 'Cache cleared.' });
 });
 
 app.listen(PORT, () => {

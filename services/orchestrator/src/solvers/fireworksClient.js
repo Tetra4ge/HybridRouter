@@ -1,7 +1,13 @@
 import OpenAI from 'openai';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Resolve .env relative to the repo root (two levels up from src/solvers/)
+dotenv.config({ path: path.resolve(__dirname, '../../../../.env') });
 
 // Initialize the OpenAI client pointing to the Fireworks API
 const apiKey = process.env.FIREWORKS_API_KEY || 'your_fireworks_api_key_here';

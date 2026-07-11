@@ -8,6 +8,7 @@ import {
   verifyWithFireworks,
   safeFireworksCall
 } from './solvers/fireworksClient.js';
+import { getCached, setCache } from './cache.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -92,6 +93,27 @@ export async function solveTask(task, customThresholds = null) {
   const startTime = Date.now();
   const t = customThresholds?.[category] || THRESHOLDS[category] || { high: 0.85, medium: 0.60, low: 0.35 };
 
+  // --- Cache Check (zero Fireworks tokens) ---
+  const cachedResult = getCached(task);
+  if (cachedResult) {
+    logTask({
+      taskId: task.id,
+      category,
+      tierUsed: 'cache',
+      modelUsed: null,
+      solverType: 'cache-hit',
+      promptTokens: 0,
+      completionTokens: 0,
+      totalTokens: 0,
+      confidence: 1.0,
+      wasEscalated: false,
+      escalationReason: null,
+      answer: cachedResult.answer,
+      latencyMs: Date.now() - startTime,
+    });
+    return cachedResult;
+  }
+
   // --- Tier 0: Deterministic Solver ---
   const deterministicResult = tryDeterministicSolve(task, category);
   if (deterministicResult) {
@@ -111,7 +133,9 @@ export async function solveTask(task, customThresholds = null) {
       answer: deterministicResult.answer,
       latencyMs
     });
-    return { id: task.id, category, answer: deterministicResult.answer };
+    const tier0Result = { id: task.id, category, answer: deterministicResult.answer };
+    setCache(task, tier0Result);
+    return tier0Result;
   }
 
   // --- Tier 1: Local Model Server ---
@@ -139,7 +163,9 @@ export async function solveTask(task, customThresholds = null) {
         answer: localLlmResult.answer,
         latencyMs
       });
-      return { id: task.id, category, answer: localLlmResult.answer };
+      const tier1DirectResult = { id: task.id, category, answer: localLlmResult.answer };
+      setCache(task, tier1DirectResult);
+      return tier1DirectResult;
     }
 
     // Action 2: Verify Local Answer via Fireworks
@@ -165,7 +191,9 @@ export async function solveTask(task, customThresholds = null) {
             answer: localLlmResult.answer,
             latencyMs
           });
-          return { id: task.id, category, answer: localLlmResult.answer };
+          const tier1VerifiedResult = { id: task.id, category, answer: localLlmResult.answer };
+          setCache(task, tier1VerifiedResult);
+          return tier1VerifiedResult;
         }
         console.log(`[Router] Verification rejected local answer.`);
       } catch (err) {
@@ -207,7 +235,9 @@ export async function solveTask(task, customThresholds = null) {
         answer: cheapResult.answer,
         latencyMs
       });
-      return { id: task.id, category, answer: cheapResult.answer };
+      const tier2Result = { id: task.id, category, answer: cheapResult.answer };
+      setCache(task, tier2Result);
+      return tier2Result;
     } catch (err) {
       console.error(`[Router] Tier-2 call failed:`, err.message);
     }
@@ -240,11 +270,13 @@ export async function solveTask(task, customThresholds = null) {
       answer: strongResult.answer,
       latencyMs
     });
-    return { id: task.id, category, answer: strongResult.answer };
+    const tier3Result = { id: task.id, category, answer: strongResult.answer };
+    setCache(task, tier3Result);
+    return tier3Result;
   } catch (err) {
     console.error(`[Router] Tier-3 call failed:`, err.message);
     
-    // Last-resort fallback so the system never crashes
+    // Last-resort fallback so the system never crashes (NOT cached — error result)
     const fallbackAnswer = localLlmResult ? localLlmResult.answer : `Error processing task: ${err.message}`;
     const latencyMs = Date.now() - startTime;
     logTask({
