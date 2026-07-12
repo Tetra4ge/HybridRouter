@@ -1,8 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { solveTask } from '../services/orchestrator/src/router.js';
-import { getLastLogForTask, updateTaskCorrectness, closeDatabase } from '../services/orchestrator/src/logger.js';
+import { solveTask } from '../services/orchestrator/services/router.js';
+import { getLastLogForTask, updateTaskCorrectness, closeDatabase } from '../services/orchestrator/services/logger.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
