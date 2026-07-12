@@ -1,13 +1,13 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Sun, Moon } from 'lucide-react'
+import { Sun, Moon, User, LogOut } from 'lucide-react'
 import MetricsCards from '../components/MetricsCards'
 import Playground from '../components/Playground'
 import DecisionDistribution from '../components/DecisionDistribution'
 import LiveLogs from '../components/LiveLogs'
 import { classifyWithGemini } from '../utils/geminiClassifier'
 
-export default function Console({ theme, toggleTheme }) {
+export default function Console({ theme, toggleTheme, isSignedIn, setIsSignedIn }) {
   const navigate = useNavigate()
   const [stats, setStats] = useState({
     totalRuns: 0,
@@ -89,6 +89,10 @@ export default function Console({ theme, toggleTheme }) {
   // Submit Query to Router
   const handleRouteQuery = async (e) => {
     e.preventDefault()
+    if (!isSignedIn) {
+      alert("Please Sign In first to test queries.")
+      return
+    }
     if (!promptInput.trim()) return
 
     setPlaygroundLoading(true)
@@ -176,6 +180,25 @@ export default function Console({ theme, toggleTheme }) {
           <button onClick={toggleTheme} className="theme-toggle-btn" aria-label="Toggle Theme">
             {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
           </button>
+          
+          {isSignedIn ? (
+            <button 
+              className="secondary-btn" 
+              onClick={() => setIsSignedIn(false)}
+              style={{ padding: '0.4rem 1rem', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+            >
+              <LogOut size={16} /> Sign Out
+            </button>
+          ) : (
+            <button 
+              className="primary-btn" 
+              onClick={() => setIsSignedIn(true)}
+              style={{ padding: '0.4rem 1rem', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+            >
+              <User size={16} /> Sign In
+            </button>
+          )}
+
           <div className="status-badge">
             <div className={`status-dot ${systemActive ? 'active' : 'inactive'}`} />
             <span>{systemActive ? 'SYSTEM ACTIVE' : 'CONNECTION ERROR'}</span>

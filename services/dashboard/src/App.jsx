@@ -22,6 +22,7 @@ function ScrollToTop() {
 
 function App() {
   const [theme, setTheme] = useState('dark')
+  const [isSignedIn, setIsSignedIn] = useState(false)
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
@@ -65,8 +66,8 @@ function App() {
       <div className="app-wrapper" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         <div style={{ flex: 1 }}>
           <Routes>
-            <Route path="/" element={<Home theme={theme} toggleTheme={toggleTheme} />} />
-            <Route path="/console" element={<Console theme={theme} toggleTheme={toggleTheme} />} />
+            <Route path="/" element={<Home theme={theme} toggleTheme={toggleTheme} isSignedIn={isSignedIn} setIsSignedIn={setIsSignedIn} />} />
+            <Route path="/console" element={<Console theme={theme} toggleTheme={toggleTheme} isSignedIn={isSignedIn} setIsSignedIn={setIsSignedIn} />} />
           </Routes>
         </div>
         <Footer />

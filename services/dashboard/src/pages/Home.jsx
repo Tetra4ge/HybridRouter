@@ -12,7 +12,9 @@ import {
   Sun,
   Moon,
   Menu,
-  X
+  X,
+  User,
+  LogOut
 } from 'lucide-react'
 import SavingsCalculator from '../components/SavingsCalculator'
 import HackathonAbout from '../components/HackathonAbout'
@@ -34,8 +36,7 @@ const itemVariants = {
     transition: { type: 'spring', stiffness: 90, damping: 14 }
   }
 }
-
-export default function Home({ theme, toggleTheme }) {
+export default function Home({ theme, toggleTheme, isSignedIn, setIsSignedIn }) {
   const navigate = useNavigate()
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -67,6 +68,24 @@ export default function Home({ theme, toggleTheme }) {
           <button onClick={toggleTheme} className="theme-toggle-btn" aria-label="Toggle Theme">
             {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
           </button>
+          
+          {isSignedIn ? (
+            <button 
+              className="secondary-btn" 
+              onClick={() => setIsSignedIn(false)}
+              style={{ marginLeft: '1rem', padding: '0.4rem 1rem', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+            >
+              <LogOut size={16} /> Sign Out
+            </button>
+          ) : (
+            <button 
+              className="primary-btn" 
+              onClick={() => setIsSignedIn(true)}
+              style={{ marginLeft: '1rem', padding: '0.4rem 1rem', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+            >
+              <User size={16} /> Sign In
+            </button>
+          )}
         </nav>
       </motion.header>
 
