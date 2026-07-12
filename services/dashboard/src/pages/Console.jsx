@@ -191,7 +191,7 @@ export default function Console({ theme, toggleTheme }) {
       <header className="dashboard-header">
         <div className="logo-area" style={{ gap: '1.6rem' }}>
           <button className="back-btn" onClick={() => navigate('/')}>
-            ? Back
+            ◀ Back
           </button>
           <h1>Control Center Dashboard</h1>
         </div>
