@@ -53,7 +53,7 @@ export async function saveQueryLog(queryId, logData, user) {
  * @param {function} onUpdate - Callback with array of log objects
  * @param {number} limitCount - Max number of logs to fetch (default 50)
  */
-export function subscribeToLogs(onUpdate, limitCount = 50) {
+export function subscribeToLogs(onUpdate, limitCount = 150) {
   const q = query(
     collection(db, LOGS_COLLECTION),
     orderBy('timestamp', 'desc'),
