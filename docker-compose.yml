@@ -26,13 +26,10 @@ services:
     build:
       context: ./services/local-model-server
       args:
-        - BASE_IMAGE=${LOCAL_MODEL_BASE_IMAGE:-python:3.10-slim}
-        - INSTALL_HEAVY=${INSTALL_HEAVY:-false}
+        - BASE_IMAGE=${LOCAL_MODEL_BASE_IMAGE:-rocm/pytorch:rocm6.1_ubuntu22.04_py3.10_pytorch_2.4}
+        - INSTALL_HEAVY=${INSTALL_HEAVY:-true}
     ports:
       - "8000:8000"
-    devices:
-      - /dev/kfd:/dev/kfd
-      - /dev/dri:/dev/dri
     environment:
       - HSA_OVERRIDE_GFX_VERSION=${HSA_OVERRIDE_GFX_VERSION:-11.0.0}
       - MODEL_NAME=${MODEL_NAME:-google/gemma-3-12b-it}
@@ -40,7 +37,7 @@ services:
     volumes:
       - model-cache:/root/.cache/huggingface
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
       interval: 30s
       timeout: 10s
       retries: 5

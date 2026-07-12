@@ -1,5 +1,7 @@
 import time
+import os
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import JSONResponse
 from schemas.payloads import (
     InferenceRequest, InferenceResponse,
     ConsistencyResponse, ClassifyRequest,
@@ -15,18 +17,30 @@ model_mgr = ModelManager()
 def health_check():
     try:
         import torch
+        import transformers
         is_cuda = torch.cuda.is_available()
         gpu_name = torch.cuda.get_device_name(0) if is_cuda else "None"
+        has_dependencies = True
     except ImportError:
         is_cuda = False
         gpu_name = "None"
-    return {
-        "status": "healthy",
+        has_dependencies = False
+
+    is_serverless = os.getenv("USE_HF_SERVERLESS") == "true"
+    is_ready = has_dependencies or is_serverless
+
+    content = {
+        "status": "healthy" if is_ready else "unhealthy",
         "model_loaded": model_mgr.model is not None if hasattr(model_mgr, 'model') else False,
         "gpu_available": is_cuda,
         "gpu_name": gpu_name,
         "model": model_mgr.model_name
     }
+
+    if not is_ready:
+        return JSONResponse(status_code=503, content=content)
+
+    return content
 
 @router.post("/inference", response_model=InferenceResponse)
 async def run_inference(req: InferenceRequest):

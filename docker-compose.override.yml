@@ -1,0 +1,7 @@
+version: '3.8'
+
+services:
+  local-model-server:
+    devices:
+      - /dev/kfd:/dev/kfd
+      - /dev/dri:/dev/dri
