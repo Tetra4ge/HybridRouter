@@ -1,14 +1,14 @@
-﻿import { useState, useEffect, useCallback } from ''react''
-import { useNavigate } from ''react-router-dom''
-import { Sun, Moon, LogOut } from ''lucide-react''
-import MetricsCards from ''../components/MetricsCards''
-import Playground from ''../components/Playground''
-import DecisionDistribution from ''../components/DecisionDistribution''
-import LiveLogs from ''../components/LiveLogs''
-import SignInModal from ''../components/SignInModal''
-import { classifyWithGemini } from ''../utils/geminiClassifier''
-import { useAuth } from ''../context/AuthContext''
-import { saveQueryLog, subscribeToLogs } from ''../firebase/firestoreUtils''
+import { useState, useEffect, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Sun, Moon, LogOut } from 'lucide-react'
+import MetricsCards from '../components/MetricsCards'
+import Playground from '../components/Playground'
+import DecisionDistribution from '../components/DecisionDistribution'
+import LiveLogs from '../components/LiveLogs'
+import SignInModal from '../components/SignInModal'
+import { classifyWithGemini } from '../utils/geminiClassifier'
+import { useAuth } from '../context/AuthContext'
+import { saveQueryLog, subscribeToLogs } from '../firebase/firestoreUtils'
 
 export default function Console({ theme, toggleTheme }) {
   const navigate = useNavigate()
@@ -22,12 +22,12 @@ export default function Console({ theme, toggleTheme }) {
     naiveCost: 0,
     savingsPercent: 0,
     tierCounts: {
-      ''tier-0'': 0,
-      ''tier-1'': 0,
-      ''tier-1-verified'': 0,
-      ''tier-2'': 0,
-      ''tier-3'': 0,
-      ''fallback'': 0
+      'tier-0': 0,
+      'tier-1': 0,
+      'tier-1-verified': 0,
+      'tier-2': 0,
+      'tier-3': 0,
+      'fallback': 0
     },
     avgLatency: 0,
     p95Latency: 0
@@ -38,8 +38,8 @@ export default function Console({ theme, toggleTheme }) {
   const [signInOpen, setSignInOpen] = useState(false)
 
   // Playground Form State
-  const [promptInput, setPromptInput] = useState('''')
-  const [selectedCategory, setSelectedCategory] = useState(''auto'')
+  const [promptInput, setPromptInput] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState('auto')
   const [playgroundLoading, setPlaygroundLoading] = useState(false)
   const [playgroundResult, setPlaygroundResult] = useState(null)
 
@@ -50,14 +50,14 @@ export default function Console({ theme, toggleTheme }) {
   // Poll SQLite stats for metrics cards only
   const fetchStats = async () => {
     try {
-      const statsRes = await fetch(''/api/stats'')
+      const statsRes = await fetch('/api/stats')
       if (statsRes.ok) {
         const statsData = await statsRes.json()
         setStats(statsData)
       }
       setSystemActive(true)
     } catch (err) {
-      console.error(''Failed to poll stats:'', err)
+      console.error('Failed to poll stats:', err)
       setSystemActive(false)
     }
   }
@@ -82,7 +82,7 @@ export default function Console({ theme, toggleTheme }) {
   const handleQueryBlur = useCallback(async () => {
     if (!promptInput.trim()) return
     const apiKey = import.meta.env.VITE_GEMINI_API_KEY
-    if (!apiKey || apiKey === ''your-gemini-api-key-here'') return
+    if (!apiKey || apiKey === 'your-gemini-api-key-here') return
 
     setAiClassifying(true)
     setAiClassifiedCategory(null)
@@ -112,11 +112,11 @@ export default function Console({ theme, toggleTheme }) {
     try {
       const queryId = `query_${Date.now()}`
       const body = { id: queryId, content: promptInput }
-      if (selectedCategory !== ''auto'') body.category = selectedCategory
+      if (selectedCategory !== 'auto') body.category = selectedCategory
 
-      const response = await fetch(''/api/tasks'', {
-        method: ''POST'',
-        headers: { ''Content-Type'': ''application/json'' },
+      const response = await fetch('/api/tasks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
       })
 
@@ -124,7 +124,7 @@ export default function Console({ theme, toggleTheme }) {
         const result = await response.json()
 
         setTimeout(async () => {
-          const logsRes = await fetch(''/api/logs?limit=5'')
+          const logsRes = await fetch('/api/logs?limit=5')
           let enrichedResult = result
 
           if (logsRes.ok) {
@@ -148,12 +148,12 @@ export default function Console({ theme, toggleTheme }) {
           // Write to Firestore (global shared log)
           await saveQueryLog(queryId, {
             prompt:           promptInput,
-            category:         enrichedResult.category || ''unknown'',
-            tierUsed:         enrichedResult.tierUsed || ''unknown'',
+            category:         enrichedResult.category || 'unknown',
+            tierUsed:         enrichedResult.tierUsed || 'unknown',
             modelUsed:        enrichedResult.modelUsed || null,
             latencyMs:        enrichedResult.latencyMs || 0,
             totalTokens:      enrichedResult.totalTokens || 0,
-            answer:           enrichedResult.answer || '''',
+            answer:           enrichedResult.answer || '',
             confidence:       enrichedResult.confidence ?? null,
             escalationReason: enrichedResult.escalationReason || null,
           }, currentUser)
@@ -161,10 +161,10 @@ export default function Console({ theme, toggleTheme }) {
           fetchStats()
         }, 800)
       } else {
-        console.error(''Error executing task:'', response.statusText)
+        console.error('Error executing task:', response.statusText)
       }
     } catch (err) {
-      console.error(''API submission failed:'', err)
+      console.error('API submission failed:', err)
     } finally {
       setPlaygroundLoading(false)
     }
@@ -172,16 +172,16 @@ export default function Console({ theme, toggleTheme }) {
 
   // Savings Calculations
   const savingsInDollars = stats.naiveCost - stats.actualCost
-  const localCount = (stats.tierCounts?.[''tier-0''] || 0) +
-                     (stats.tierCounts?.[''tier-1''] || 0) +
-                     (stats.tierCounts?.[''tier-1-verified''] || 0)
+  const localCount = (stats.tierCounts?.['tier-0'] || 0) +
+                     (stats.tierCounts?.['tier-1'] || 0) +
+                     (stats.tierCounts?.['tier-1-verified'] || 0)
   const localRate = stats.totalRuns > 0 ? (localCount / stats.totalRuns) * 100 : 0
 
   const getPercentage = (count) => stats.totalRuns > 0 ? (count / stats.totalRuns) * 100 : 0
-  const t0Pct = getPercentage(stats.tierCounts?.[''tier-0''] || 0)
-  const t1Pct = getPercentage((stats.tierCounts?.[''tier-1''] || 0) + (stats.tierCounts?.[''tier-1-verified''] || 0))
-  const t2Pct = getPercentage(stats.tierCounts?.[''tier-2''] || 0)
-  const t3Pct = getPercentage(stats.tierCounts?.[''tier-3''] || 0)
+  const t0Pct = getPercentage(stats.tierCounts?.['tier-0'] || 0)
+  const t1Pct = getPercentage((stats.tierCounts?.['tier-1'] || 0) + (stats.tierCounts?.['tier-1-verified'] || 0))
+  const t2Pct = getPercentage(stats.tierCounts?.['tier-2'] || 0)
+  const t3Pct = getPercentage(stats.tierCounts?.['tier-3'] || 0)
 
   return (
     <div className="dashboard-container">
@@ -189,15 +189,15 @@ export default function Console({ theme, toggleTheme }) {
 
       {/* Header */}
       <header className="dashboard-header">
-        <div className="logo-area" style={{ gap: ''1.6rem'' }}>
-          <button className="back-btn" onClick={() => navigate(''/'')}>
-            ◄ Back
+        <div className="logo-area" style={{ gap: '1.6rem' }}>
+          <button className="back-btn" onClick={() => navigate('/')}>
+            ? Back
           </button>
           <h1>Control Center Dashboard</h1>
         </div>
-        <div style={{ display: ''flex'', gap: ''1rem'', alignItems: ''center'' }}>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
           <button onClick={toggleTheme} className="theme-toggle-btn" aria-label="Toggle Theme">
-            {theme === ''dark'' ? <Sun size={18} /> : <Moon size={18} />}
+            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
           </button>
 
           {currentUser ? (
@@ -210,11 +210,11 @@ export default function Console({ theme, toggleTheme }) {
                   referrerPolicy="no-referrer"
                 />
               )}
-              <span className="user-name">{currentUser.displayName?.split('' '')[0]}</span>
+              <span className="user-name">{currentUser.displayName?.split(' ')[0]}</span>
               <button
                 className="secondary-btn"
                 onClick={signOutUser}
-                style={{ padding: ''0.3rem 0.8rem'', fontSize: ''0.85rem'', display: ''flex'', alignItems: ''center'', gap: ''0.4rem'' }}
+                style={{ padding: '0.3rem 0.8rem', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
               >
                 <LogOut size={14} /> Sign Out
               </button>
@@ -223,15 +223,15 @@ export default function Console({ theme, toggleTheme }) {
             <button
               className="primary-btn"
               onClick={() => setSignInOpen(true)}
-              style={{ padding: ''0.4rem 1.1rem'', fontSize: ''0.9rem'' }}
+              style={{ padding: '0.4rem 1.1rem', fontSize: '0.9rem' }}
             >
               Sign In
             </button>
           )}
 
           <div className="status-badge">
-            <div className={`status-dot ${systemActive ? ''active'' : ''inactive''}`} />
-            <span>{systemActive ? ''SYSTEM ACTIVE'' : ''CONNECTION ERROR''}</span>
+            <div className={`status-dot ${systemActive ? 'active' : 'inactive'}`} />
+            <span>{systemActive ? 'SYSTEM ACTIVE' : 'CONNECTION ERROR'}</span>
           </div>
         </div>
       </header>
