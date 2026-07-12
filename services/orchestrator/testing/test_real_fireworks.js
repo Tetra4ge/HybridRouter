@@ -1,4 +1,4 @@
-import { safeFireworksCall } from '../services/solvers/fireworksClient.js';
+import { safeFireworksCall, callFireworks } from '../services/solvers/fireworksClient.js';
 import dotenv from 'dotenv';
 
 dotenv.config({ path: '../../.env' });

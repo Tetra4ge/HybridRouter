@@ -25,11 +25,11 @@ const client = new OpenAI({
 export const MODEL_MAP = {
   math:           { cheap: 'glm-5p1',    strong: 'deepseek-v4-pro' },
   code:           { cheap: 'glm-5p1',    strong: 'deepseek-v4-pro' },
-  factual:        { cheap: 'kimi-k2p5',  strong: 'kimi-k2p6'       },
+  factual:        { cheap: 'glm-5p1',    strong: 'kimi-k2p6'       },
   logic:          { cheap: 'glm-5p1',    strong: 'deepseek-v4-pro' },
   parsing:        { cheap: 'glm-5p1',    strong: 'kimi-k2p6'       },
-  classification: { cheap: 'kimi-k2p5',  strong: 'kimi-k2p6'       },
-  creative:       { cheap: 'kimi-k2p5',  strong: 'kimi-k2p6'       },
+  classification: { cheap: 'glm-5p1',    strong: 'kimi-k2p6'       },
+  creative:       { cheap: 'glm-5p1',    strong: 'kimi-k2p6'       },
   multi_step:     { cheap: 'glm-5p1',    strong: 'deepseek-v4-pro' },
 };
 

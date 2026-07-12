@@ -14,6 +14,9 @@ services:
       - ENABLE_CACHE=${ENABLE_CACHE:-true}
       - LOG_LEVEL=${LOG_LEVEL:-info}
       - LOG_DB_PATH=/app/data/logs/tasks.db
+      - USE_HF_SERVERLESS=${USE_HF_SERVERLESS:-false}
+      - HF_TOKEN=${HF_TOKEN}
+      - MODEL_NAME=${MODEL_NAME:-google/gemma-3-12b-it}
     volumes:
       - ./input:/input:ro
       - ./output:/output
@@ -34,6 +37,7 @@ services:
       - HSA_OVERRIDE_GFX_VERSION=${HSA_OVERRIDE_GFX_VERSION:-11.0.0}
       - MODEL_NAME=${MODEL_NAME:-google/gemma-3-12b-it}
       - HF_TOKEN=${HF_TOKEN}
+      - USE_HF_SERVERLESS=${USE_HF_SERVERLESS:-false}
     volumes:
       - model-cache:/root/.cache/huggingface
     healthcheck:

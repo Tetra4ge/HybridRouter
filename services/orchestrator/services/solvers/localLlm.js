@@ -22,17 +22,17 @@ export async function solveWithLocalModel(task, category) {
     else if (category === 'factual') maxTokens = 50;
     else if (category === 'code') maxTokens = 300;
 
-    const useHfServerless = process.env.USE_HF_SERVERLESS === 'true';
+    let useHfServerless = process.env.USE_HF_SERVERLESS === 'true';
+
+    if (useHfServerless && (!process.env.HF_TOKEN || process.env.HF_TOKEN.trim() === '')) {
+      console.warn('[LocalLLM] USE_HF_SERVERLESS is true but HF_TOKEN is not defined. Falling back to local model server inference.');
+      useHfServerless = false;
+    }
 
     if (useHfServerless) {
       const hfToken = process.env.HF_TOKEN;
       const modelName = process.env.MODEL_NAME || 'google/gemma-3-12b-it';
       const hfUrl = 'https://router.huggingface.co/v1/chat/completions';
-
-      if (!hfToken) {
-        console.warn('[LocalLLM] USE_HF_SERVERLESS is true but HF_TOKEN is not defined.');
-        return null;
-      }
 
       // Generate 3 samples in parallel for self-consistency voting
       const numSamples = 3;
