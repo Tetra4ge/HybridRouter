@@ -26,7 +26,7 @@ def health_check():
         gpu_name = "None"
         has_dependencies = False
 
-    is_serverless = os.getenv("USE_HF_SERVERLESS") == "true"
+    is_serverless = os.getenv("USE_HF_SERVERLESS") == "true" and bool(os.getenv("HF_TOKEN"))
     is_ready = has_dependencies or is_serverless
 
     content = {
