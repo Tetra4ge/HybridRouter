@@ -28,13 +28,13 @@ export async function saveQueryLog(queryId, logData, user) {
     const docRef = doc(db, LOGS_COLLECTION, queryId)
     await setDoc(docRef, {
       queryId,
-      prompt:            logData.prompt || ',
+      prompt:            logData.prompt || '',
       category:          logData.category || 'unknown',
       tierUsed:          logData.tierUsed || 'unknown',
       modelUsed:         logData.modelUsed || null,
       latencyMs:         logData.latencyMs || 0,
       totalTokens:       logData.totalTokens || 0,
-      answer:            logData.answer || ',
+      answer:            logData.answer || '',
       confidence:        logData.confidence ?? null,
       escalationReason:  logData.escalationReason || null,
       submittedBy:       user?.uid || 'anonymous',

@@ -1,4 +1,4 @@
-/**
+ï»¿/**
  * components/SignInModal.jsx
  * Full-screen modal overlay for Google Sign-In.
  * Matches the Butter & Cherry dark design system.
@@ -66,7 +66,7 @@ export default function SignInModal({ isOpen, onClose }) {
             </button>
 
             <p className="modal-footer-note">
-              Free to use · No billing · Google account only
+              Free to use â€¢ No billing â€¢ Google account only
             </p>
           </motion.div>
         </motion.div>
@@ -74,3 +74,4 @@ export default function SignInModal({ isOpen, onClose }) {
     </AnimatePresence>
   )
 }
+
