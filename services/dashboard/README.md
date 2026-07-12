@@ -11,6 +11,7 @@
 - [Features](#features)
 - [AI-Assist Smart Classifier](#-ai-assist-smart-classifier)
 - [Interactive Router Playground](#interactive-router-playground)
+- [Firebase Authentication](#firebase-authentication)
 - [Getting Started](#getting-started)
 - [Environment Variables](#environment-variables)
 - [Project Structure](#project-structure)
@@ -150,6 +151,59 @@ Each box turns **green** (active hit), **amber** (passed through), or **grey** (
 
 ---
 
+## Firebase Authentication
+
+The dashboard uses **Firebase Auth** (Google Sign-In) to identify who submits playground queries. Authentication is **optional** — the routing pipeline and scoring are completely unaffected by sign-in state.
+
+### Architecture
+
+```
+ Browser
+   │
+   ├─► Firebase Auth (Google OAuth popup)
+   │       └─► currentUser  ──────────────────────────┐
+   │                                                   ▼
+   ├─► Playground.jsx  ──► saveQueryLog(queryId, data, user)
+   │                              │
+   │                              ▼
+   │                    Firestore: logs/{queryId}
+   │                    { submittedBy, submittedByName,
+   │                      submittedByPhoto, timestamp, … }
+   │
+   └─► Home.jsx NavBar  ──► <SignInModal />  (top-right corner)
+```
+
+### Key Files
+
+| File | Purpose |
+|------|---------|
+| [`src/firebase/config.js`](src/firebase/config.js) | Firebase app init — reads `VITE_FIREBASE_*` env vars; exports `auth`, `db`, `googleProvider` |
+| [`src/firebase/firestoreUtils.js`](src/firebase/firestoreUtils.js) | `saveQueryLog()` — writes a routing result to `logs/` collection, tagged with the user's `uid` and `displayName`; `subscribeToLogs()` — real-time Firestore listener for the Live Logs Explorer |
+| [`src/context/AuthContext.jsx`](src/context/AuthContext.jsx) | React Context wrapping the whole app; exposes `currentUser`, `loading`, `signInWithGoogle()`, `signOutUser()` via the `useAuth()` hook |
+| [`src/components/SignInModal.jsx`](src/components/SignInModal.jsx) | Floating sign-in button in the Home page nav; shows Google avatar + display name when signed in, sign-out on click |
+
+### Sign-In Flow
+
+1. User clicks **Sign in with Google** in the top-right corner of the Home page
+2. `signInWithGoogle()` opens a **Google OAuth popup** via `signInWithPopup(auth, googleProvider)`
+3. On success, `onAuthStateChanged` updates `currentUser` across the whole app
+4. Every query submitted from the Playground is tagged with `submittedBy`, `submittedByName`, and `submittedByPhoto` in Firestore
+5. On sign-out, `currentUser` becomes `null`; logs continue to be submitted as `anonymous`
+
+### Firestore Security Rules
+
+The `logs/` collection is configured so that **any authenticated user can read all logs; any authenticated user can write** (writes are tagged with their own `uid`). Unauthenticated reads are blocked by default in the Firebase Console rules.
+
+### Setting Up Firebase
+
+1. Create a project at [console.firebase.google.com](https://console.firebase.google.com)
+2. Enable **Authentication → Google** as a sign-in provider
+3. Enable **Firestore Database** (start in production mode)
+4. Add your app and copy the SDK config snippet
+5. Paste the values into `.env` (see [Environment Variables](#environment-variables))
+
+---
+
 ## Getting Started
 
 ### Prerequisites
@@ -184,6 +238,13 @@ cp .env.example .env
 | Variable | Required | Description |
 |----------|----------|-------------|
 | `VITE_GEMINI_API_KEY` | Optional | Gemini API key for AI-Assist Smart Classifier. Get one free at [aistudio.google.com](https://aistudio.google.com/app/apikey). If not set, AI-Assist is silently disabled. |
+| `VITE_FIREBASE_API_KEY` | Required for Auth | Firebase Web API key (from Firebase Console → Project Settings → Your apps) |
+| `VITE_FIREBASE_AUTH_DOMAIN` | Required for Auth | OAuth redirect domain, e.g. `your-project.firebaseapp.com` |
+| `VITE_FIREBASE_PROJECT_ID` | Required for Auth | Firebase project ID, e.g. `hybridrouter-dash` |
+| `VITE_FIREBASE_STORAGE_BUCKET` | Optional | Cloud Storage bucket, e.g. `your-project.appspot.com` |
+| `VITE_FIREBASE_MESSAGING_SENDER_ID` | Optional | FCM sender ID (unused unless Push Notifications added) |
+| `VITE_FIREBASE_APP_ID` | Required for Auth | Firebase App ID |
+| `VITE_FIREBASE_MEASUREMENT_ID` | Optional | Google Analytics measurement ID (e.g. `G-XXXXXXXX`) |
 
 > **Security:** `.env` is in `.gitignore` and will never be committed. Only `.env.example` (with placeholder values) is tracked in git. Share your key with teammates via a secure channel (e.g., a shared `.env` in a private message or password manager).
 
@@ -201,23 +262,31 @@ services/dashboard/
 ├── vite.config.js              # ← Dev proxy: /api/* → localhost:3000
 │
 └── src/
+    ├── firebase/
+    │   ├── config.js           # ← Firebase app init; exports auth, db, googleProvider
+    │   └── firestoreUtils.js   # ← saveQueryLog() + subscribeToLogs() helpers
+    │
+    ├── context/
+    │   └── AuthContext.jsx     # ← AuthProvider + useAuth() hook (currentUser, signInWithGoogle, signOutUser)
+    │
     ├── utils/
     │   └── geminiClassifier.js # ← AI-Assist: Gemini Flash Lite classify call
     │
     ├── components/
+    │   ├── SignInModal.jsx      # ← Google Sign-In button / user avatar in Home nav
     │   ├── Playground.jsx      # ← Interactive query tester + AI badge UI
     │   ├── MetricsCards.jsx    # ← 4 stat cards (requests, savings, latency)
     │   ├── DecisionDistribution.jsx # ← Tier distribution bar chart
-    │   ├── LiveLogs.jsx        # ← Audit log table (polls every 5s)
+    │   ├── LiveLogs.jsx        # ← Audit log table (real-time Firestore listener)
     │   ├── CustomCursor.jsx    # ← Fluid custom cursor dot
     │   ├── SavingsCalculator.jsx    # ← Token cost savings breakdown
     │   └── Footer.jsx          # ← Hackathon footer
     │
     ├── pages/
-    │   ├── Home.jsx            # ← Landing page with hero + feature cards
+    │   ├── Home.jsx            # ← Landing page with hero + feature cards + auth nav
     │   └── Console.jsx         # ← Control Center (metrics + playground + logs)
     │
-    ├── App.jsx                 # ← React Router setup + theme state
+    ├── App.jsx                 # ← React Router setup + AuthProvider + theme state
     └── index.css               # ← Full design system (tokens, components, animations)
 ```
 
@@ -229,9 +298,16 @@ The dashboard Dockerfile uses a **two-stage build** (Node builder → Nginx serv
 The Gemini API key must be passed as a build argument since `.env` is gitignored:
 
 ```bash
-# Build with Gemini key injected at build time
+# Build with all Vite env vars injected at build time
 docker build \
-  --build-arg VITE_GEMINI_API_KEY=your-key-here \
+  --build-arg VITE_GEMINI_API_KEY=your-gemini-key \
+  --build-arg VITE_FIREBASE_API_KEY=your-firebase-api-key \
+  --build-arg VITE_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com \
+  --build-arg VITE_FIREBASE_PROJECT_ID=your-project-id \
+  --build-arg VITE_FIREBASE_STORAGE_BUCKET=your-project.appspot.com \
+  --build-arg VITE_FIREBASE_MESSAGING_SENDER_ID=000000000000 \
+  --build-arg VITE_FIREBASE_APP_ID=1:000000000000:web:abc123 \
+  --build-arg VITE_FIREBASE_MEASUREMENT_ID=G-XXXXXXXXXX \
   -t hybridrouter-dashboard \
   services/dashboard/
 
@@ -240,6 +316,10 @@ docker build \
 #   build:
 #     args:
 #       - VITE_GEMINI_API_KEY=${VITE_GEMINI_API_KEY}
+#       - VITE_FIREBASE_API_KEY=${VITE_FIREBASE_API_KEY}
+#       - VITE_FIREBASE_AUTH_DOMAIN=${VITE_FIREBASE_AUTH_DOMAIN}
+#       - VITE_FIREBASE_PROJECT_ID=${VITE_FIREBASE_PROJECT_ID}
+#       - VITE_FIREBASE_APP_ID=${VITE_FIREBASE_APP_ID}
 ```
 
 > **Why build-arg and not runtime env?**  
