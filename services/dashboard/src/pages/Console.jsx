@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Sun, Moon } from 'lucide-react'
 import MetricsCards from '../components/MetricsCards'
 import Playground from '../components/Playground'
 import DecisionDistribution from '../components/DecisionDistribution'
 import LiveLogs from '../components/LiveLogs'
+import { classifyWithGemini } from '../utils/geminiClassifier'
 
 export default function Console({ theme, toggleTheme }) {
   const navigate = useNavigate()
@@ -36,6 +37,10 @@ export default function Console({ theme, toggleTheme }) {
   const [playgroundLoading, setPlaygroundLoading] = useState(false)
   const [playgroundResult, setPlaygroundResult] = useState(null)
 
+  // AI-Assist Smart Classifier state
+  const [aiClassifying, setAiClassifying] = useState(false)
+  const [aiClassifiedCategory, setAiClassifiedCategory] = useState(null)
+
   const fetchDashboardData = async () => {
     try {
       const statsRes = await fetch('/api/stats')
@@ -61,6 +66,25 @@ export default function Console({ theme, toggleTheme }) {
     const interval = setInterval(fetchDashboardData, 5000)
     return () => clearInterval(interval)
   }, [])
+
+  // AI-Assist: auto-classify query on textarea blur
+  const handleQueryBlur = useCallback(async () => {
+    if (!promptInput.trim()) return
+    const apiKey = import.meta.env.VITE_GEMINI_API_KEY
+    if (!apiKey || apiKey === 'your-gemini-api-key-here') return // skip if key not configured
+
+    setAiClassifying(true)
+    setAiClassifiedCategory(null)
+    try {
+      const category = await classifyWithGemini(promptInput, apiKey)
+      if (category) {
+        setSelectedCategory(category)
+        setAiClassifiedCategory(category)
+      }
+    } finally {
+      setAiClassifying(false)
+    }
+  }, [promptInput])
 
   // Submit Query to Router
   const handleRouteQuery = async (e) => {
@@ -177,6 +201,9 @@ export default function Console({ theme, toggleTheme }) {
           playgroundLoading={playgroundLoading}
           playgroundResult={playgroundResult}
           handleRouteQuery={handleRouteQuery}
+          handleQueryBlur={handleQueryBlur}
+          aiClassifying={aiClassifying}
+          aiClassifiedCategory={aiClassifiedCategory}
         />
 
         {/* Right Side: Decision Distribution */}

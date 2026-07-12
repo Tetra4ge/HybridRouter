@@ -5,7 +5,10 @@ export default function Playground({
   setSelectedCategory,
   playgroundLoading,
   playgroundResult,
-  handleRouteQuery
+  handleRouteQuery,
+  handleQueryBlur,
+  aiClassifying,
+  aiClassifiedCategory
 }) {
   const getPipelineClass = (tier) => {
     if (!playgroundResult) return 'bypassed'
@@ -33,9 +36,20 @@ export default function Playground({
             className="playground-textarea"
             value={promptInput}
             onChange={(e) => setPromptInput(e.target.value)}
+            onBlur={handleQueryBlur}
             placeholder="e.g. Calculate 24 * 15, or Classify sentiment: 'This is great!'"
             required
           />
+
+          {/* AI-Assist Status Badge */}
+          {(aiClassifying || aiClassifiedCategory) && (
+            <div className={`ai-classify-badge ${aiClassifying ? 'classifying' : 'done'}`}>
+              {aiClassifying
+                ? '✦ AI classifying...'
+                : `✓ AI detected: ${aiClassifiedCategory}`
+              }
+            </div>
+          )}
         </div>
 
         <div style={{ marginBottom: '1.5rem', display: 'flex', gap: '1rem', alignItems: 'center' }}>
