@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Sun, Moon, LogOut } from 'lucide-react'
 import MetricsCards from '../components/MetricsCards'
@@ -36,6 +36,18 @@ export default function Console({ theme, toggleTheme }) {
   const [firestoreLogs, setFirestoreLogs] = useState([])
   const [systemActive, setSystemActive] = useState(true)
   const [signInOpen, setSignInOpen] = useState(false)
+  const [showDropdown, setShowDropdown] = useState(false)
+  const dropdownRef = useRef(null)
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   // Playground Form State
   const [promptInput, setPromptInput] = useState('')
@@ -133,12 +145,12 @@ export default function Console({ theme, toggleTheme }) {
             if (matchingLog) {
               enrichedResult = {
                 ...result,
-                tierUsed:          matchingLog.tier_used,
-                modelUsed:         matchingLog.model_used,
-                latencyMs:         matchingLog.latency_ms,
-                totalTokens:       matchingLog.total_tokens,
-                escalationReason:  matchingLog.escalation_reason,
-                confidence:        matchingLog.confidence
+                tierUsed: matchingLog.tier_used,
+                modelUsed: matchingLog.model_used,
+                latencyMs: matchingLog.latency_ms,
+                totalTokens: matchingLog.total_tokens,
+                escalationReason: matchingLog.escalation_reason,
+                confidence: matchingLog.confidence
               }
             }
           }
@@ -147,14 +159,14 @@ export default function Console({ theme, toggleTheme }) {
 
           // Write to Firestore (global shared log)
           await saveQueryLog(queryId, {
-            prompt:           promptInput,
-            category:         enrichedResult.category || 'unknown',
-            tierUsed:         enrichedResult.tierUsed || 'unknown',
-            modelUsed:        enrichedResult.modelUsed || null,
-            latencyMs:        enrichedResult.latencyMs || 0,
-            totalTokens:      enrichedResult.totalTokens || 0,
-            answer:           enrichedResult.answer || '',
-            confidence:       enrichedResult.confidence ?? null,
+            prompt: promptInput,
+            category: enrichedResult.category || 'unknown',
+            tierUsed: enrichedResult.tierUsed || 'unknown',
+            modelUsed: enrichedResult.modelUsed || null,
+            latencyMs: enrichedResult.latencyMs || 0,
+            totalTokens: enrichedResult.totalTokens || 0,
+            answer: enrichedResult.answer || '',
+            confidence: enrichedResult.confidence ?? null,
             escalationReason: enrichedResult.escalationReason || null,
           }, currentUser)
 
@@ -173,8 +185,8 @@ export default function Console({ theme, toggleTheme }) {
   // Savings Calculations
   const savingsInDollars = stats.naiveCost - stats.actualCost
   const localCount = (stats.tierCounts?.['tier-0'] || 0) +
-                     (stats.tierCounts?.['tier-1'] || 0) +
-                     (stats.tierCounts?.['tier-1-verified'] || 0)
+    (stats.tierCounts?.['tier-1'] || 0) +
+    (stats.tierCounts?.['tier-1-verified'] || 0)
   const localRate = stats.totalRuns > 0 ? (localCount / stats.totalRuns) * 100 : 0
 
   const getPercentage = (count) => stats.totalRuns > 0 ? (count / stats.totalRuns) * 100 : 0
@@ -201,23 +213,36 @@ export default function Console({ theme, toggleTheme }) {
           </button>
 
           {currentUser ? (
-            <div className="auth-user-chip">
-              {currentUser.photoURL && (
-                <img
-                  src={currentUser.photoURL}
-                  alt={currentUser.displayName}
-                  className="user-avatar"
-                  referrerPolicy="no-referrer"
-                />
-              )}
-              <span className="user-name">{currentUser.displayName?.split(' ')[0]}</span>
-              <button
-                className="secondary-btn"
-                onClick={signOutUser}
-                style={{ padding: '0.3rem 0.8rem', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
+            <div className="user-profile-dropdown" ref={dropdownRef}>
+              <div
+                className="user-profile-trigger"
+                onClick={() => setShowDropdown(!showDropdown)}
               >
-                <LogOut size={14} /> Sign Out
-              </button>
+                {currentUser.photoURL && (
+                  <img
+                    src={currentUser.photoURL}
+                    alt={currentUser.displayName}
+                    className="user-avatar"
+                    referrerPolicy="no-referrer"
+                  />
+                )}
+                <span className="user-name">
+                  {currentUser.displayName?.split(' ')[0]}
+                </span>
+              </div>
+              {showDropdown && (
+                <div className="profile-dropdown-menu">
+                  <button
+                    className="profile-signout-btn"
+                    onClick={() => {
+                      signOutUser()
+                      setShowDropdown(false)
+                    }}
+                  >
+                    <LogOut size={14} /> Sign Out
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
             <button
@@ -228,11 +253,6 @@ export default function Console({ theme, toggleTheme }) {
               Sign In
             </button>
           )}
-
-          <div className="status-badge">
-            <div className={`status-dot ${systemActive ? 'active' : 'inactive'}`} />
-            <span>{systemActive ? 'SYSTEM ACTIVE' : 'CONNECTION ERROR'}</span>
-          </div>
         </div>
       </header>
 

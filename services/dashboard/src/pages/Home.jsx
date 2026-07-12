@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
@@ -43,6 +43,22 @@ export default function Home({ theme, toggleTheme }) {
   const { currentUser, signOutUser } = useAuth()
   const [menuOpen, setMenuOpen] = useState(false)
   const [signInOpen, setSignInOpen] = useState(false)
+  const [showDropdown, setShowDropdown] = useState(false)
+  const dropdownRef = useRef(null)
+  const headerRef = useRef(null)
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false)
+      }
+      if (headerRef.current && !headerRef.current.contains(event.target)) {
+        setMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   return (
     <motion.div
@@ -54,7 +70,7 @@ export default function Home({ theme, toggleTheme }) {
       <SignInModal isOpen={signInOpen} onClose={() => setSignInOpen(false)} />
 
       {/* Header / Navbar */}
-      <motion.header className="dashboard-header" variants={itemVariants}>
+      <motion.header className="dashboard-header" ref={headerRef} variants={itemVariants}>
         <div className="logo-area">
           <h1 style={{ fontFamily: 'var(--display)' }}>HybridRouter</h1>
         </div>
@@ -76,23 +92,36 @@ export default function Home({ theme, toggleTheme }) {
           </button>
 
           {currentUser ? (
-            <div className="auth-user-chip">
-              {currentUser.photoURL && (
-                <img
-                  src={currentUser.photoURL}
-                  alt={currentUser.displayName}
-                  className="user-avatar"
-                  referrerPolicy="no-referrer"
-                />
-              )}
-              <span className="user-name">{currentUser.displayName?.split(' ')[0]}</span>
-              <button
-                className="secondary-btn"
-                onClick={signOutUser}
-                style={{ padding: '0.3rem 0.8rem', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
+            <div className="user-profile-dropdown" ref={dropdownRef}>
+              <div
+                className="user-profile-trigger"
+                onClick={() => setShowDropdown(!showDropdown)}
               >
-                <LogOut size={14} /> Sign Out
-              </button>
+                {currentUser.photoURL && (
+                  <img
+                    src={currentUser.photoURL}
+                    alt={currentUser.displayName}
+                    className="user-avatar"
+                    referrerPolicy="no-referrer"
+                  />
+                )}
+                <span className="user-name">
+                  {currentUser.displayName?.split(' ')[0]}
+                </span>
+              </div>
+              {showDropdown && (
+                <div className="profile-dropdown-menu">
+                  <button
+                    className="profile-signout-btn"
+                    onClick={() => {
+                      signOutUser()
+                      setShowDropdown(false)
+                    }}
+                  >
+                    <LogOut size={14} /> Sign Out
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
             <button
