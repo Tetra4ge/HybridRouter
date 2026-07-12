@@ -1,4 +1,4 @@
-﻿/**
+/**
  * components/SignInModal.jsx
  * Full-screen modal overlay for Google Sign-In.
  * Matches the Butter & Cherry dark design system.

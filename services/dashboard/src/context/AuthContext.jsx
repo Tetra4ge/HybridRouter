@@ -46,7 +46,7 @@ export function AuthProvider({ children }) {
   )
 }
 
-/** Convenience hook — use inside any component */
+/** Convenience hook Â— use inside any component */
 export function useAuth() {
   return useContext(AuthContext)
 }
