@@ -18,49 +18,37 @@ An intelligent, multi-tier routing system designed to maximize task-solving accu
   <img src="https://img.shields.io/badge/AWS_EC2-FF9900?style=for-the-badge&logo=amazon-ec2&logoColor=white" />
   <img src="https://img.shields.io/badge/AMD_ROCm-ED1C24?style=for-the-badge&logo=amd&logoColor=white" />
   <img src="https://img.shields.io/badge/Google_Gemini-8E75C2?style=for-the-badge&logo=google-gemini&logoColor=white" />
+  <img src="https://img.shields.io/badge/Google_Gemma-3F83F8?style=for-the-badge&logo=google&logoColor=white" />
   <img src="https://img.shields.io/badge/Hugging_Face-FFD21E?style=for-the-badge&logo=huggingface&logoColor=black" />
   <img src="https://img.shields.io/badge/Fireworks_AI-5F259F?style=for-the-badge&logo=fireworks&logoColor=white" />
 </p>
 
 ---
-
 ## System Architecture
 
 The router processes tasks through a **5-tier waterfall** designed to maximize cost savings:
 
 ![System Architecture](images/archi.png)
 
-```
-[Prompt Input]
-      │
-      ▼
-┌──────────────┐
-│  Classifier  │  --> Heuristic/Regex pre-check (math, code, etc.)
-└──────┬───────┘
-       │
-       ▼
-┌─────────────────────────────────┐
-│ Tier 0: Deterministic Solvers   │ --> Solves formulas (SymPy) & strings natively.
-│ (FREE / Zero Tokens)            │     Perfect accuracy, zero token cost!
-└──────────────┬──────────────────┘
-               │ Unsolved
-               ▼
-┌─────────────────────────────────┐
-│ Tier 1: Local LLM (AMD GPU)     │ --> Runs Gemma 2B or Qwen 2.5B locally via ROCm.
-│ (FREE / Zero Fireworks Tokens)  │     Returns result if self-consistency confidence is high.
-└──────────────┬──────────────────┘
-               │ Low Confidence
-               ▼
-┌─────────────────────────────────┐
-│ Tier 2: Fireworks Cheap Model   │ --> Escalates to Mixtral 8x7B on Fireworks cloud
-│ (Minimal Token Cost)            │     for intermediate complexity.
-└──────────────┬──────────────────┘
-               │ Still Uncertain
-               ▼
-┌─────────────────────────────────┐
-│ Tier 3: Fireworks Strong Model  │ --> Escalates to Llama 3.1 70B on Fireworks cloud.
-│ (Expensive Token Cost)          │     Only invoked for high-complexity reasoning.
-└─────────────────────────────────┘
+```mermaid
+graph TD
+    %% Define Styles
+    classDef default fill:#141414,stroke:#f5f5f5,stroke-width:1px,color:#f5f5f5;
+    classDef startNode fill:#f5f5f5,stroke:#f5f5f5,color:#0a0a0a;
+    classDef solverNode fill:#00e676,stroke:#00e676,stroke-width:1px,color:#0a0a0a;
+    classDef cloudNode fill:#ff5252,stroke:#ff5252,stroke-width:1px,color:#ffffff;
+    
+    A[Input Task Query]:::startNode --> B[Regex Heuristics Classifier]
+    B --> C{T0: Deterministic Solvers}
+    C -- "Solved (Free)" --> D[Return Output Answer]:::solverNode
+    C -- "Unsolved" --> E[T1: Local LLM Gemma/Qwen]
+    E --> F{Confidence Gate}
+    F -- "High Confidence (Free)" --> D
+    F -- "Low Confidence" --> G[T2: Fireworks Cheap Model Mixtral]
+    G --> H{Validation Gate}
+    H -- "Verified" --> D
+    H -- "Uncertain" --> I[T3: Fireworks Strong Model Llama 70B]:::cloudNode
+    I --> D
 ```
 
 ---
