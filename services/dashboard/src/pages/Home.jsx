@@ -1,6 +1,6 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
+﻿import { useState } from ''react''
+import { useNavigate } from ''react-router-dom''
+import { motion } from ''framer-motion''
 import {
   Zap,
   ShieldCheck,
@@ -13,11 +13,12 @@ import {
   Moon,
   Menu,
   X,
-  User,
-  LogOut
-} from 'lucide-react'
-import SavingsCalculator from '../components/SavingsCalculator'
-import HackathonAbout from '../components/HackathonAbout'
+  LogOut,
+} from ''lucide-react''
+import SavingsCalculator from ''../components/SavingsCalculator''
+import HackathonAbout from ''../components/HackathonAbout''
+import SignInModal from ''../components/SignInModal''
+import { useAuth } from ''../context/AuthContext''
 
 // Animation variants
 const containerVariants = {
@@ -33,12 +34,15 @@ const itemVariants = {
   visible: {
     y: 0,
     opacity: 1,
-    transition: { type: 'spring', stiffness: 90, damping: 14 }
+    transition: { type: ''spring'', stiffness: 90, damping: 14 }
   }
 }
-export default function Home({ theme, toggleTheme, isSignedIn, setIsSignedIn }) {
+
+export default function Home({ theme, toggleTheme }) {
   const navigate = useNavigate()
+  const { currentUser, signOutUser } = useAuth()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [signInOpen, setSignInOpen] = useState(false)
 
   return (
     <motion.div
@@ -47,10 +51,12 @@ export default function Home({ theme, toggleTheme, isSignedIn, setIsSignedIn }) 
       animate="visible"
       variants={containerVariants}
     >
+      <SignInModal isOpen={signInOpen} onClose={() => setSignInOpen(false)} />
+
       {/* Header / Navbar */}
       <motion.header className="dashboard-header" variants={itemVariants}>
         <div className="logo-area">
-          <h1 style={{ fontFamily: 'var(--display)' }}>HybridRouter</h1>
+          <h1 style={{ fontFamily: ''var(--display)'' }}>HybridRouter</h1>
         </div>
 
         <button
@@ -61,29 +67,40 @@ export default function Home({ theme, toggleTheme, isSignedIn, setIsSignedIn }) 
           {menuOpen ? <X size={22} /> : <Menu size={22} />}
         </button>
 
-        <nav className={`navbar-links ${menuOpen ? 'open' : ''}`}>
+        <nav className={`navbar-links ${menuOpen ? ''open'' : ''''}`}>
           <a href="#features" className="nav-link" onClick={() => setMenuOpen(false)}>Features</a>
           <a href="#simulator" className="nav-link" onClick={() => setMenuOpen(false)}>Simulator</a>
           <a href="#architecture" className="nav-link" onClick={() => setMenuOpen(false)}>Architecture</a>
           <button onClick={toggleTheme} className="theme-toggle-btn" aria-label="Toggle Theme">
-            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+            {theme === ''dark'' ? <Sun size={18} /> : <Moon size={18} />}
           </button>
-          
-          {isSignedIn ? (
-            <button 
-              className="secondary-btn" 
-              onClick={() => setIsSignedIn(false)}
-              style={{ marginLeft: '1rem', padding: '0.4rem 1rem', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
-            >
-              <LogOut size={16} /> Sign Out
-            </button>
+
+          {currentUser ? (
+            <div className="auth-user-chip">
+              {currentUser.photoURL && (
+                <img
+                  src={currentUser.photoURL}
+                  alt={currentUser.displayName}
+                  className="user-avatar"
+                  referrerPolicy="no-referrer"
+                />
+              )}
+              <span className="user-name">{currentUser.displayName?.split('' '')[0]}</span>
+              <button
+                className="secondary-btn"
+                onClick={signOutUser}
+                style={{ padding: ''0.3rem 0.8rem'', fontSize: ''0.85rem'', display: ''flex'', alignItems: ''center'', gap: ''0.4rem'' }}
+              >
+                <LogOut size={14} /> Sign Out
+              </button>
+            </div>
           ) : (
-            <button 
-              className="primary-btn" 
-              onClick={() => setIsSignedIn(true)}
-              style={{ marginLeft: '1rem', padding: '0.4rem 1rem', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+            <button
+              className="primary-btn"
+              onClick={() => setSignInOpen(true)}
+              style={{ padding: ''0.4rem 1.1rem'', fontSize: ''0.9rem'' }}
             >
-              <User size={16} /> Sign In
+              Sign In
             </button>
           )}
         </nav>
@@ -118,18 +135,18 @@ export default function Home({ theme, toggleTheme, isSignedIn, setIsSignedIn }) 
         >
           <motion.button
             className="primary-btn"
-            style={{ padding: '0.8rem 2.5rem', fontSize: '1.05rem' }}
-            onClick={() => navigate('/console')}
+            style={{ padding: ''0.8rem 2.5rem'', fontSize: ''1.05rem'' }}
+            onClick={() => currentUser ? navigate(''/console'') : setSignInOpen(true)}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            Open Live Console
+            {currentUser ? ''Open Live Console'' : ''Sign In to Open Console''}
           </motion.button>
 
           <motion.a
             href="#architecture"
             className="secondary-btn"
-            style={{ padding: '0.8rem 2.5rem', fontSize: '1.05rem' }}
+            style={{ padding: ''0.8rem 2.5rem'', fontSize: ''1.05rem'' }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -149,7 +166,7 @@ export default function Home({ theme, toggleTheme, isSignedIn, setIsSignedIn }) 
 
         <div className="features-grid">
           <motion.div className="feature-card" variants={itemVariants} whileHover={{ y: -6 }}>
-            <div className="feature-icon" style={{ color: 'var(--accent-butter)' }}>
+            <div className="feature-icon" style={{ color: ''var(--accent-butter)'' }}>
               <Zap size={32} />
             </div>
             <h4>Waterfall Routing Order</h4>
@@ -157,7 +174,7 @@ export default function Home({ theme, toggleTheme, isSignedIn, setIsSignedIn }) 
           </motion.div>
 
           <motion.div className="feature-card" variants={itemVariants} whileHover={{ y: -6 }}>
-            <div className="feature-icon" style={{ color: 'var(--accent-butter)' }}>
+            <div className="feature-icon" style={{ color: ''var(--accent-butter)'' }}>
               <ShieldCheck size={32} />
             </div>
             <h4>Confidence Gating</h4>
@@ -165,7 +182,7 @@ export default function Home({ theme, toggleTheme, isSignedIn, setIsSignedIn }) 
           </motion.div>
 
           <motion.div className="feature-card" variants={itemVariants} whileHover={{ y: -6 }}>
-            <div className="feature-icon" style={{ color: 'var(--accent-butter)' }}>
+            <div className="feature-icon" style={{ color: ''var(--accent-butter)'' }}>
               <TrendingDown size={32} />
             </div>
             <h4>89.2% Cost Savings</h4>
@@ -173,7 +190,7 @@ export default function Home({ theme, toggleTheme, isSignedIn, setIsSignedIn }) 
           </motion.div>
 
           <motion.div className="feature-card" variants={itemVariants} whileHover={{ y: -6 }}>
-            <div className="feature-icon" style={{ color: 'var(--accent-butter)' }}>
+            <div className="feature-icon" style={{ color: ''var(--accent-butter)'' }}>
               <Cpu size={32} />
             </div>
             <h4>Local Model Solver</h4>
@@ -181,15 +198,15 @@ export default function Home({ theme, toggleTheme, isSignedIn, setIsSignedIn }) 
           </motion.div>
 
           <motion.div className="feature-card" variants={itemVariants} whileHover={{ y: -6 }}>
-            <div className="feature-icon" style={{ color: 'var(--accent-butter)' }}>
+            <div className="feature-icon" style={{ color: ''var(--accent-butter)'' }}>
               <Database size={32} />
             </div>
-            <h4>SQLite Telemetry Logs</h4>
-            <p>Audits every routing run, recording task prompts, selected solvers, token counts, correctness checks, and execution times.</p>
+            <h4>Firestore Live Logs</h4>
+            <p>Every authenticated query is persisted to Cloud Firestore in real-time, visible to all signed-in users with submitter attribution.</p>
           </motion.div>
 
           <motion.div className="feature-card" variants={itemVariants} whileHover={{ y: -6 }}>
-            <div className="feature-icon" style={{ color: 'var(--accent-butter)' }}>
+            <div className="feature-icon" style={{ color: ''var(--accent-butter)'' }}>
               <Sliders size={32} />
             </div>
             <h4>Interactive Playground</h4>
@@ -212,7 +229,7 @@ export default function Home({ theme, toggleTheme, isSignedIn, setIsSignedIn }) 
         <motion.div className="architecture-diagram-container" variants={itemVariants}>
           <div className="arch-step">
             <div className="arch-step-header">1. Classifier</div>
-            <p>Regex & heuristics identify task category (Math, Code, Factual, Sentiment, etc.).</p>
+            <p>Regex &amp; heuristics identify task category (Math, Code, Factual, Sentiment, etc.).</p>
           </div>
           <div className="arch-arrow">
             <ArrowRight size={20} />

@@ -1,11 +1,12 @@
-import { useState, useEffect } from 'react'
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
-import './App.css'
-import Home from './pages/Home'
-import Console from './pages/Console'
-import Footer from './components/Footer'
-import CustomCursor from './components/CustomCursor'
-import Lenis from 'lenis'
+﻿import { useState, useEffect } from ''react''
+import { BrowserRouter, Routes, Route, useLocation } from ''react-router-dom''
+import ''./App.css''
+import Home from ''./pages/Home''
+import Console from ''./pages/Console''
+import Footer from ''./components/Footer''
+import CustomCursor from ''./components/CustomCursor''
+import Lenis from ''lenis''
+import { AuthProvider } from ''./context/AuthContext''
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -21,17 +22,15 @@ function ScrollToTop() {
 }
 
 function App() {
-  const [theme, setTheme] = useState('dark')
-  const [isSignedIn, setIsSignedIn] = useState(false)
+  const [theme, setTheme] = useState(''dark'')
 
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme)
-    localStorage.setItem('theme', theme)
+    document.documentElement.setAttribute(''data-theme'', theme)
+    localStorage.setItem(''theme'', theme)
   }, [theme])
 
   // Initialize Lenis smooth scroll globally
   useEffect(() => {
-    // Reset browser scroll to top on boot
     window.scrollTo(0, 0)
 
     const lenis = new Lenis({
@@ -56,23 +55,25 @@ function App() {
   }, [])
 
   const toggleTheme = () => {
-    setTheme(prev => (prev === 'dark' ? 'light' : 'dark'))
+    setTheme(prev => (prev === ''dark'' ? ''light'' : ''dark''))
   }
 
   return (
-    <BrowserRouter>
-      <ScrollToTop />
-      <CustomCursor />
-      <div className="app-wrapper" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-        <div style={{ flex: 1 }}>
-          <Routes>
-            <Route path="/" element={<Home theme={theme} toggleTheme={toggleTheme} isSignedIn={isSignedIn} setIsSignedIn={setIsSignedIn} />} />
-            <Route path="/console" element={<Console theme={theme} toggleTheme={toggleTheme} isSignedIn={isSignedIn} setIsSignedIn={setIsSignedIn} />} />
-          </Routes>
+    <AuthProvider>
+      <BrowserRouter>
+        <ScrollToTop />
+        <CustomCursor />
+        <div className="app-wrapper" style={{ display: ''flex'', flexDirection: ''column'', minHeight: ''100vh'' }}>
+          <div style={{ flex: 1 }}>
+            <Routes>
+              <Route path="/" element={<Home theme={theme} toggleTheme={toggleTheme} />} />
+              <Route path="/console" element={<Console theme={theme} toggleTheme={toggleTheme} />} />
+            </Routes>
+          </div>
+          <Footer />
         </div>
-        <Footer />
-      </div>
-    </BrowserRouter>
+      </BrowserRouter>
+    </AuthProvider>
   )
 }
 
