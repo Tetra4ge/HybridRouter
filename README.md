@@ -24,11 +24,11 @@ An intelligent, multi-tier routing system designed to maximize task-solving accu
 
 ---
 
-## 🧠 System Architecture
+## System Architecture
 
 The router processes tasks through a **5-tier waterfall** designed to maximize cost savings:
 
-![System Architecture](docs/Architecture.png)
+![System Architecture](images/archi.png)
 
 ```
 [Prompt Input]
@@ -65,7 +65,7 @@ The router processes tasks through a **5-tier waterfall** designed to maximize c
 
 ---
 
-## 📸 Dashboard Preview & Walkthrough
+## Dashboard Preview & Walkthrough
 
 Here is a visual breakdown of the Control Center Dashboard and how it tracks operations:
 
