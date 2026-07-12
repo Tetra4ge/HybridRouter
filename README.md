@@ -322,16 +322,6 @@ Deterministic solver tokens are FREE.
 
 ---
 
-## Team
-
-| Role | Responsibility |
-|------|---------------|
-| **Member A** | Classifier + Tier-0 deterministic solvers + confidence-gating router |
-| **Member B** | FastAPI local model server + Fireworks client + token logging |
-| **Member C** | React dashboard + Docker packaging + README |
-
----
-
 ## License
 
 See [LICENSE](LICENSE) for details.
