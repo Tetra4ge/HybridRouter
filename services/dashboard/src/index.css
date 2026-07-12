@@ -285,6 +285,7 @@ h4 {
 /* Live logs Table */
 .table-container {
   overflow-x: auto;
+  overflow-y: auto !important;
   max-height: 500px;
 }
 

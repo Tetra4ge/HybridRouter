@@ -37,7 +37,12 @@ export default function Console({ theme, toggleTheme }) {
   const [systemActive, setSystemActive] = useState(true)
   const [signInOpen, setSignInOpen] = useState(false)
   const [showDropdown, setShowDropdown] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
   const dropdownRef = useRef(null)
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [firestoreLogs.length])
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -58,6 +63,14 @@ export default function Console({ theme, toggleTheme }) {
   // AI-Assist Smart Classifier state
   const [aiClassifying, setAiClassifying] = useState(false)
   const [aiClassifiedCategory, setAiClassifiedCategory] = useState(null)
+
+  // Prevent Lenis from blocking scroll events inside the logs table
+  useEffect(() => {
+    const container = document.querySelector('.table-container')
+    if (container) {
+      container.setAttribute('data-lenis-prevent', 'true')
+    }
+  }, [firestoreLogs])
 
   // Poll SQLite stats for metrics cards only
   const fetchStats = async () => {
@@ -286,7 +299,63 @@ export default function Console({ theme, toggleTheme }) {
       </div>
 
       {/* Firestore Live Logs (sign-in required) */}
-      <LiveLogs logs={firestoreLogs} isAuthenticated={!!currentUser} onSignIn={() => setSignInOpen(true)} />
+      {(() => {
+        const logsPerPage = 5
+        const indexOfLastLog = currentPage * logsPerPage
+        const indexOfFirstLog = indexOfLastLog - logsPerPage
+        const currentLogs = firestoreLogs.slice(indexOfFirstLog, indexOfLastLog)
+        const totalPages = Math.ceil(firestoreLogs.length / logsPerPage)
+
+        return (
+          <>
+            <LiveLogs logs={currentLogs} isAuthenticated={!!currentUser} onSignIn={() => setSignInOpen(true)} />
+            
+            {currentUser && firestoreLogs.length > logsPerPage && (
+              <div 
+                className="pagination-controls" 
+                style={{ 
+                  display: 'flex', 
+                  justifyContent: 'center', 
+                  alignItems: 'center', 
+                  gap: '1.5rem', 
+                  marginTop: '1.5rem',
+                  marginBottom: '2rem'
+                }}
+              >
+                <button 
+                  className="secondary-btn" 
+                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                  style={{ 
+                    padding: '0.4rem 1.2rem', 
+                    fontSize: '0.85rem',
+                    cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                    opacity: currentPage === 1 ? 0.5 : 1
+                  }}
+                >
+                  ◀ Prev
+                </button>
+                <span style={{ fontSize: '0.9rem', fontWeight: 600, fontFamily: 'var(--sans)' }}>
+                  Page {currentPage} of {totalPages || 1}
+                </span>
+                <button 
+                  className="secondary-btn" 
+                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                  disabled={currentPage === totalPages || totalPages === 0}
+                  style={{ 
+                    padding: '0.4rem 1.2rem', 
+                    fontSize: '0.85rem',
+                    cursor: (currentPage === totalPages || totalPages === 0) ? 'not-allowed' : 'pointer',
+                    opacity: (currentPage === totalPages || totalPages === 0) ? 0.5 : 1
+                  }}
+                >
+                  Next ▶
+                </button>
+              </div>
+            )}
+          </>
+        )
+      })()}
     </div>
   )
 }
