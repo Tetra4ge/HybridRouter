@@ -12,10 +12,13 @@ import {
   Sun,
   Moon,
   Menu,
-  X
+  X,
+  LogOut,
 } from 'lucide-react'
 import SavingsCalculator from '../components/SavingsCalculator'
 import HackathonAbout from '../components/HackathonAbout'
+import SignInModal from '../components/SignInModal'
+import { useAuth } from '../context/AuthContext'
 
 // Animation variants
 const containerVariants = {
@@ -37,7 +40,9 @@ const itemVariants = {
 
 export default function Home({ theme, toggleTheme }) {
   const navigate = useNavigate()
+  const { currentUser, signOutUser } = useAuth()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [signInOpen, setSignInOpen] = useState(false)
 
   return (
     <motion.div
@@ -46,6 +51,8 @@ export default function Home({ theme, toggleTheme }) {
       animate="visible"
       variants={containerVariants}
     >
+      <SignInModal isOpen={signInOpen} onClose={() => setSignInOpen(false)} />
+
       {/* Header / Navbar */}
       <motion.header className="dashboard-header" variants={itemVariants}>
         <div className="logo-area">
@@ -67,6 +74,35 @@ export default function Home({ theme, toggleTheme }) {
           <button onClick={toggleTheme} className="theme-toggle-btn" aria-label="Toggle Theme">
             {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
           </button>
+
+          {currentUser ? (
+            <div className="auth-user-chip">
+              {currentUser.photoURL && (
+                <img
+                  src={currentUser.photoURL}
+                  alt={currentUser.displayName}
+                  className="user-avatar"
+                  referrerPolicy="no-referrer"
+                />
+              )}
+              <span className="user-name">{currentUser.displayName?.split(' ')[0]}</span>
+              <button
+                className="secondary-btn"
+                onClick={signOutUser}
+                style={{ padding: '0.3rem 0.8rem', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
+              >
+                <LogOut size={14} /> Sign Out
+              </button>
+            </div>
+          ) : (
+            <button
+              className="primary-btn"
+              onClick={() => setSignInOpen(true)}
+              style={{ padding: '0.4rem 1.1rem', fontSize: '0.9rem' }}
+            >
+              Sign In
+            </button>
+          )}
         </nav>
       </motion.header>
 
@@ -100,11 +136,11 @@ export default function Home({ theme, toggleTheme }) {
           <motion.button
             className="primary-btn"
             style={{ padding: '0.8rem 2.5rem', fontSize: '1.05rem' }}
-            onClick={() => navigate('/console')}
+            onClick={() => currentUser ? navigate('/console') : setSignInOpen(true)}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            Open Live Console
+            {currentUser ? 'Open Live Console' : 'Sign In to Open Console'}
           </motion.button>
 
           <motion.a
@@ -165,8 +201,8 @@ export default function Home({ theme, toggleTheme }) {
             <div className="feature-icon" style={{ color: 'var(--accent-butter)' }}>
               <Database size={32} />
             </div>
-            <h4>SQLite Telemetry Logs</h4>
-            <p>Audits every routing run, recording task prompts, selected solvers, token counts, correctness checks, and execution times.</p>
+            <h4>Firestore Live Logs</h4>
+            <p>Every authenticated query is persisted to Cloud Firestore in real-time, visible to all signed-in users with submitter attribution.</p>
           </motion.div>
 
           <motion.div className="feature-card" variants={itemVariants} whileHover={{ y: -6 }}>
@@ -193,7 +229,7 @@ export default function Home({ theme, toggleTheme }) {
         <motion.div className="architecture-diagram-container" variants={itemVariants}>
           <div className="arch-step">
             <div className="arch-step-header">1. Classifier</div>
-            <p>Regex & heuristics identify task category (Math, Code, Factual, Sentiment, etc.).</p>
+            <p>Regex &amp; heuristics identify task category (Math, Code, Factual, Sentiment, etc.).</p>
           </div>
           <div className="arch-arrow">
             <ArrowRight size={20} />

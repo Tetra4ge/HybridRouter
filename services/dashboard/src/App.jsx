@@ -6,6 +6,7 @@ import Console from './pages/Console'
 import Footer from './components/Footer'
 import CustomCursor from './components/CustomCursor'
 import Lenis from 'lenis'
+import { AuthProvider } from './context/AuthContext'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -30,7 +31,6 @@ function App() {
 
   // Initialize Lenis smooth scroll globally
   useEffect(() => {
-    // Reset browser scroll to top on boot
     window.scrollTo(0, 0)
 
     const lenis = new Lenis({
@@ -59,19 +59,21 @@ function App() {
   }
 
   return (
-    <BrowserRouter>
-      <ScrollToTop />
-      <CustomCursor />
-      <div className="app-wrapper" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-        <div style={{ flex: 1 }}>
-          <Routes>
-            <Route path="/" element={<Home theme={theme} toggleTheme={toggleTheme} />} />
-            <Route path="/console" element={<Console theme={theme} toggleTheme={toggleTheme} />} />
-          </Routes>
+    <AuthProvider>
+      <BrowserRouter>
+        <ScrollToTop />
+        <CustomCursor />
+        <div className="app-wrapper" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+          <div style={{ flex: 1 }}>
+            <Routes>
+              <Route path="/" element={<Home theme={theme} toggleTheme={toggleTheme} />} />
+              <Route path="/console" element={<Console theme={theme} toggleTheme={toggleTheme} />} />
+            </Routes>
+          </div>
+          <Footer />
         </div>
-        <Footer />
-      </div>
-    </BrowserRouter>
+      </BrowserRouter>
+    </AuthProvider>
   )
 }
 
