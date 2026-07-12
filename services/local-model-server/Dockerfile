@@ -1,10 +1,16 @@
-# Strict version pinned to ensure AMD ROCm compatibility
-FROM rocm/pytorch:rocm6.1_ubuntu22.04_py3.10_pytorch_2.4
+ARG BASE_IMAGE=python:3.10-slim
+FROM ${BASE_IMAGE}
 
 WORKDIR /app
 
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+
+ARG INSTALL_HEAVY=false
+RUN if [ "$INSTALL_HEAVY" = "true" ]; then \
+      pip install --no-cache-dir -r requirements.txt; \
+    else \
+      pip install --no-cache-dir fastapi uvicorn pydantic; \
+    fi
 
 COPY . .
 

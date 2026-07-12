@@ -1,13 +1,15 @@
 import os
-import torch
-from transformers import AutoTokenizer, AutoModelForCausalLM
 
 class ModelManager:
     """Manages lazy-loading and inference for the local LLM running on CPU or GPU (ROCm/CUDA)."""
     def __init__(self):
         self.model = None
         self.tokenizer = None
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        try:
+            import torch
+            self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        except ImportError:
+            self.device = "cpu"
         
         # Load environment variables from any nearby .env file
         env_paths = [".env", "../.env", "../../.env", "../orchestrator/.env"]
@@ -27,6 +29,16 @@ class ModelManager:
     def load(self):
         """Lazy-loads the model and tokenizer on the first request."""
         if self.model is None:
+            try:
+                import torch
+                from transformers import AutoTokenizer, AutoModelForCausalLM
+            except ImportError:
+                raise ImportError(
+                    "PyTorch and/or Transformers library is not installed. "
+                    "To use the local model server, please ensure you build the container with "
+                    "INSTALL_HEAVY=true and use a base image that supports them."
+                )
+            
             print(f"Loading tokenizer and model for {self.model_name} on device: {self.device}...")
             self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
             
@@ -49,6 +61,7 @@ class ModelManager:
     def generate(self, prompt: str, max_tokens: int = 100, temperature: float = 0.3) -> tuple[str, int]:
         """Generates a single response for a prompt. Returns (generated_text, tokens_used)."""
         self.load()
+        import torch
         
         # Apply chat template if available to adhere to instruct-tuning
         messages = [{"role": "user", "content": prompt}]
@@ -80,6 +93,7 @@ class ModelManager:
     def generate_samples(self, prompt: str, n: int = 3, max_tokens: int = 100, temperature: float = 0.7) -> tuple[list[str], int]:
         """Generates multiple samples for self-consistency. Returns (samples, total_tokens_used)."""
         self.load()
+        import torch
         
         messages = [{"role": "user", "content": prompt}]
         try:

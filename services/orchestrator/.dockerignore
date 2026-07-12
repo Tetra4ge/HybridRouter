@@ -1,5 +1,7 @@
 node_modules
-data
 npm-debug.log
+data/logs/*
+data/cache/*
+output/*
+input/*
 .env
-.git

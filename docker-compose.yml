@@ -1,67 +1,59 @@
 version: '3.8'
 
 services:
+  orchestrator:
+    build: ./services/orchestrator
+    ports:
+      - "4000:4000"
+    environment:
+      - FIREWORKS_API_KEY=${FIREWORKS_API_KEY}
+      - FIREWORKS_BASE_URL=${FIREWORKS_BASE_URL:-https://api.fireworks.ai/inference/v1}
+      - LOCAL_MODEL_URL=http://local-model-server:8000
+      - HIGH_CONFIDENCE_THRESHOLD=${HIGH_CONFIDENCE_THRESHOLD:-0.85}
+      - MEDIUM_CONFIDENCE_THRESHOLD=${MEDIUM_CONFIDENCE_THRESHOLD:-0.60}
+      - ENABLE_CACHE=${ENABLE_CACHE:-true}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - LOG_DB_PATH=/app/data/logs/tasks.db
+    volumes:
+      - ./input:/input:ro
+      - ./output:/output
+      - ./data:/app/data
+    depends_on:
+      local-model-server:
+        condition: service_healthy
+
   local-model-server:
     build:
       context: ./services/local-model-server
+      args:
+        - BASE_IMAGE=${LOCAL_MODEL_BASE_IMAGE:-python:3.10-slim}
+        - INSTALL_HEAVY=${INSTALL_HEAVY:-false}
     ports:
       - "8000:8000"
-    environment:
-      - LOG_LEVEL=info
     devices:
-      # AMD GPU Passthrough
       - /dev/kfd:/dev/kfd
       - /dev/dri:/dev/dri
+    environment:
+      - HSA_OVERRIDE_GFX_VERSION=${HSA_OVERRIDE_GFX_VERSION:-11.0.0}
+      - MODEL_NAME=${MODEL_NAME:-google/gemma-3-12b-it}
+      - HF_TOKEN=${HF_TOKEN}
     volumes:
-      # Cache HuggingFace models locally so they don't redownload
-      - ./data/huggingface:/root/.cache/huggingface
+      - model-cache:/root/.cache/huggingface
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
-      interval: 10s
-      timeout: 5s
+      interval: 30s
+      timeout: 10s
       retries: 5
-
-  orchestrator:
-    build:
-      context: ./services/orchestrator
-    ports:
-      - "3000:3000"
-    env_file:
-      - .env
-    environment:
-      # Point to the Docker network hostname
-      - LOCAL_MODEL_URL=http://local-model-server:8000
-    depends_on:
-      local-model-server:
-        condition: service_healthy
-    volumes:
-      - ./data/logs:/app/data/logs
+      start_period: 120s
 
   dashboard:
-    build:
-      context: ./services/dashboard
+    build: ./services/dashboard
     ports:
-      - "80:80"
+      - "3000:80"
     depends_on:
       - orchestrator
-
-  # This is the headless evaluator for the judges.
-  # Run this using: docker compose --profile eval up evaluator
-  evaluator:
-    build:
-      context: ./services/orchestrator
-    command: npm run evaluate
     profiles:
-      - eval
-    env_file:
-      - .env
-    environment:
-      - LOCAL_MODEL_URL=http://local-model-server:8000
-    depends_on:
-      local-model-server:
-        condition: service_healthy
-    volumes:
-      # Map the judge's input and output folders
-      - ./input:/input
-      - ./output:/output
-      - ./data/logs:/app/data/logs
+      - ui
+
+volumes:
+  model-cache:

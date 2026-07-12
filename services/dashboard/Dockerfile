@@ -1,14 +1,19 @@
-# Stage 1: Build React App
+# Build Stage
 FROM node:20-slim AS builder
 WORKDIR /app
+
+# Copy dependency manifests
 COPY package.json package-lock.json ./
-RUN npm install
+RUN npm ci
+
+# Copy code and build
 COPY . .
 RUN npm run build
 
-# Stage 2: Serve with Nginx and Proxy API
+# Serve Stage
 FROM nginx:alpine
 COPY --from=builder /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 EXPOSE 80
+
 CMD ["nginx", "-g", "daemon off;"]

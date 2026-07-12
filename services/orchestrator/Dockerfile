@@ -1,18 +1,19 @@
-FROM node:20
+FROM node:20-slim
 
 WORKDIR /app
 
-# Install dependencies first for Docker caching
+# Install dependency files first to cache layers
 COPY package.json package-lock.json ./
-RUN npm install --production
+RUN npm ci --production
 
 # Copy application code
 COPY . .
 
-# Ensure data directory exists for SQLite
-RUN mkdir -p /app/data/logs
+# Ensure input/output and data directories exist
+RUN mkdir -p /input /output /app/data/logs /app/data/cache
 
+# Expose port for development/dashboard mode
 EXPOSE 3000
 
-# Default command starts the web API for the dashboard
-CMD ["npm", "run", "start"]
+# Default to running the headless batch processor for hackathon evaluation
+CMD ["node", "main.js"]

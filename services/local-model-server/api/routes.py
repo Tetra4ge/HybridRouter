@@ -1,5 +1,4 @@
 import time
-import torch
 from fastapi import APIRouter, HTTPException
 from schemas.payloads import (
     InferenceRequest, InferenceResponse,
@@ -14,11 +13,16 @@ model_mgr = ModelManager()
 
 @router.get("/health")
 def health_check():
-    is_cuda = torch.cuda.is_available()
-    gpu_name = torch.cuda.get_device_name(0) if is_cuda else "None"
+    try:
+        import torch
+        is_cuda = torch.cuda.is_available()
+        gpu_name = torch.cuda.get_device_name(0) if is_cuda else "None"
+    except ImportError:
+        is_cuda = False
+        gpu_name = "None"
     return {
         "status": "healthy",
-        "model_loaded": model_mgr.model is not None,
+        "model_loaded": model_mgr.model is not None if hasattr(model_mgr, 'model') else False,
         "gpu_available": is_cuda,
         "gpu_name": gpu_name,
         "model": model_mgr.model_name
