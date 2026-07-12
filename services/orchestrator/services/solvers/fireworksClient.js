@@ -39,7 +39,7 @@ export const MODEL_MAP = {
 const TOKEN_CAPS = {
   math: 20,
   code: 300,
-  factual: 100,
+  factual: 50,
   logic: 200,
   parsing: 50,
   classification: 10,

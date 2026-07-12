@@ -52,7 +52,7 @@ export async function solveWithLocalModel(task, category) {
               { role: 'user', content: task.content }
             ],
             max_tokens: maxTokens,
-            temperature: 0.7, // Higher temp for self-consistency diversity
+            temperature: 0.1, // Lower temp for self-consistency agreement
           }),
         });
 
@@ -88,7 +88,7 @@ export async function solveWithLocalModel(task, category) {
         body: JSON.stringify({
           prompt: task.content,
           max_tokens: maxTokens,
-          temperature: 0.7,
+          temperature: 0.1,
           num_samples: 3, // Enable self-consistency voting
         }),
       });
