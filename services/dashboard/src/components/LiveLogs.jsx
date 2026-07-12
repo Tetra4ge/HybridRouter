@@ -25,7 +25,7 @@ export default function LiveLogs({ logs, isAuthenticated, onSignIn }) {
       <div className="panel-title">
         <span>Live Logs Feed</span>
         <span style={{ fontSize: '0.8rem', fontWeight: 'normal', color: 'var(--text-muted)' }}>
-          Firestore real-time · All users
+          Firestore real-time Â· All users
         </span>
       </div>
       <div className="table-container">
