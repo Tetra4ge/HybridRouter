@@ -1035,14 +1035,15 @@ tr:hover td {
 /* Footer Styling */
 .dashboard-footer {
   margin-top: 4rem;
-  border-top: 3px solid var(--accent-color) !important;
-  padding: 2rem 0;
+  padding: 0 0 2rem 0;
   width: 100%;
 }
 
 .footer-content {
   max-width: 1350px;
   margin: 0 auto;
+  border-top: 3px solid var(--accent-color) !important;
+  padding-top: 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;

@@ -138,7 +138,7 @@ export default function Playground({
                 ℹ️ {playgroundResult.escalationReason}
               </div>
             )}
-            <div className="output-body">
+            <div className="output-body" data-lenis-prevent>
               <pre style={{ whiteSpace: 'pre-wrap', fontFamily: 'var(--mono)', fontSize: '0.85rem' }}>
                 {playgroundResult.answer}
               </pre>

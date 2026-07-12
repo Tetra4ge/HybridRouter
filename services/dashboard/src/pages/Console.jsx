@@ -111,27 +111,46 @@ export default function Console({ theme, toggleTheme }) {
       'fallback': 0
     }
 
-    firestoreLogs.forEach(log => {
-      totalLatency += log.latencyMs || 0
+    // Cost factors (aligned with backend server)
+    const CHEAP_IN_COST = 0.20e-6
+    const CHEAP_OUT_COST = 0.20e-6
+    const STRONG_IN_COST = 1.74e-6
+    const STRONG_OUT_COST = 3.48e-6
 
-      const tier = log.tierUsed || 'unknown'
+    firestoreLogs.forEach(log => {
+      totalLatency += log.latencyMs || log.latency_ms || 0
+
+      // Support camelCase tierUsed or snake_case tier_used
+      const tier = log.tierUsed || log.tier_used || 'unknown'
       if (tierCounts[tier] !== undefined) {
         tierCounts[tier]++
       } else {
         tierCounts[tier] = (tierCounts[tier] || 0) + 1
       }
 
-      totalTokens += log.totalTokens || 0
+      const logTokens = log.totalTokens || log.total_tokens || 0
+      totalTokens += logTokens
       
-      const tokens = log.totalTokens || 0
-      let tierRate = 0
-      if (tier === 'tier-2') {
-        tierRate = 0.00000015
-      } else if (tier === 'tier-3') {
-        tierRate = 0.0000009
+      // Split tokens (estimate 60% prompt, 40% completion if not explicitly provided)
+      let completionTokens = 120
+      let promptTokens = 0
+      if (logTokens > 0) {
+        completionTokens = Math.floor(logTokens * 0.4)
+        promptTokens = logTokens - completionTokens
       }
-      actualCost += tokens * tierRate
-      naiveCost += tokens * 0.0000009
+
+      // Actual Cost
+      let taskCost = 0
+      if (tier === 'tier-1-verified' || tier === 'tier-2') {
+        taskCost = (promptTokens * CHEAP_IN_COST) + (completionTokens * CHEAP_OUT_COST)
+      } else if (tier === 'tier-3') {
+        taskCost = (promptTokens * STRONG_IN_COST) + (completionTokens * STRONG_OUT_COST)
+      }
+      actualCost += taskCost
+
+      // Naive Cost (assuming everything is routed to Tier-3 Strong model without compression)
+      const taskNaiveCost = (150 * STRONG_IN_COST) + (completionTokens * STRONG_OUT_COST)
+      naiveCost += taskNaiveCost
     })
 
     const avgLatency = totalRuns > 0 ? (totalLatency / totalRuns / 1000) : 0
@@ -139,7 +158,7 @@ export default function Console({ theme, toggleTheme }) {
 
     // Sort latencies to compute actual P95 latency
     const sortedLatencies = firestoreLogs
-      .map(log => (log.latencyMs || 0) / 1000)
+      .map(log => (log.latencyMs || log.latency_ms || 0) / 1000)
       .sort((a, b) => a - b)
     const p95Index = Math.min(Math.floor(sortedLatencies.length * 0.95), sortedLatencies.length - 1)
     const p95Latency = sortedLatencies.length > 0 ? sortedLatencies[p95Index] : 0
