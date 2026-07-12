@@ -240,6 +240,20 @@ HybridRouter/
 
 ---
 
+## 🔗 Project Resources
+
+<p align="center">
+  <a href="https://docs.google.com/presentation/d/1Yea4_PI_wTM1tGAE3pDd4aJWHm7PHCqu/edit?usp=sharing&ouid=114411507749133284212&rtpof=true&sd=true" target="_blank">
+    <img src="https://img.shields.io/badge/Project_Presentation-D24D57?style=for-the-badge&logo=google-slides&logoColor=white" />
+  </a>
+  &nbsp;&nbsp;
+  <a href="https://drive.google.com/file/d/1MpIDzzUIY4IU-xvItcTHjekicu7FlRj9/view" target="_blank">
+    <img src="https://img.shields.io/badge/Demo_Video-1F3A60?style=for-the-badge&logo=google-drive&logoColor=white" />
+  </a>
+</p>
+
+---
+
 <p align="center">
   <b>Built with 🧠 by <a href="https://github.com/tetra4ge">Team TetraFourge</a> for the AMD Developer Hackathon 2026</b><br/>
   <i>Maximize accuracy. Minimize tokens. Win.</i>

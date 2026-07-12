@@ -90,7 +90,7 @@ export default function Playground({
           <div className="visual-title">Waterfall Routing Pipeline</div>
           <div className="pipeline-line-container">
             <div className={`pipeline-step ${getPipelineClass('classifier')}`}>
-              <div className="step-number">1</div>
+              <div className="step-number">C</div>
               <div className="step-label">Classifier</div>
               <div className="step-val">{playgroundResult.category}</div>
             </div>
